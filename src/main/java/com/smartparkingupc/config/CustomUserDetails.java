@@ -1,11 +1,13 @@
 package com.smartparkingupc.config;
 
 import com.smartparkingupc.http.request.UserCredential;
+import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 
+@Data
 public class CustomUserDetails implements UserDetails {
 
   private final String username;
@@ -21,15 +23,6 @@ public class CustomUserDetails implements UserDetails {
     return null;
   }
 
-  @Override
-  public String getPassword() {
-    return password;
-  }
-
-  @Override
-  public String getUsername() {
-    return username;
-  }
 
   @Override
   public boolean isAccountNonExpired() {

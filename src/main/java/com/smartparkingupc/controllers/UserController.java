@@ -32,7 +32,9 @@ public class UserController {
     if (EmailValidator.isValid(user.getEmail())) {
 
       if (userService.findUserByEmail(user.getEmail()).isPresent()) return ResponseEntity.badRequest().build();
-      userService.saveAndEncode(user);
+
+      user.setPassword(passwordEncoder.encode(user.getPassword()));
+      userService.saveUser(user);
       return EntityResponse.generateResponse(ResponseConstants.CREATED_USER_MESSAGE,
               HttpStatus.CREATED, "Created User");
 
@@ -41,7 +43,7 @@ public class UserController {
             HttpStatus.BAD_REQUEST, "Invalid Request");
   }
 
-  @GetMapping("/find")
+  @GetMapping("/vehicles")
   public Long findUserByVehicleRequestEmail(@RequestParam String email) {
 
     Optional<UserEntity> optionalUser = userService.findUserByEmail(email);

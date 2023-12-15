@@ -23,13 +23,14 @@ public class UserServiceImpl implements IUserService {
 
   @Autowired
   private UserRepository userRepository;
+  @Autowired
+  private RoleServiceImpl roleService;
 
   @Autowired
   private VehicleRepository vehicleRepository;
   @Autowired
   private IUserRoleRepository userRoleRepository;
 
-  public static final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
   @Override
   public List<UserEntity> findAll() {
@@ -69,16 +70,13 @@ public class UserServiceImpl implements IUserService {
 
   @Override
   public void saveUser(UserEntity user) {
-    userRepository.save(user);
+    UserEntity savedUser = userRepository.save(user);
+    UserRole userRole = UserRole.builder().user(savedUser)
+            .role(roleService.findDefaultRole()).build();
+    userRoleRepository.save(userRole);
 
   }
 
-  @Override
-  public void saveAndEncode(UserEntity user) {
-    user.setPassword(passwordEncoder.encode(user.getPassword()));
-    userRepository.save(user);
-
-  }
 
   @Override
   public List<VehicleDTO> getAllUserVehiclesById(List<Long> associatedIds) {
@@ -95,7 +93,7 @@ public class UserServiceImpl implements IUserService {
                             .isOwner(Objects.equals(vehicle.getOwnerId(), associatedIds.get(0)))
                             .build()
                     )
-            ).toList();*/
+            ).toList(); */
 
     return null;
   }

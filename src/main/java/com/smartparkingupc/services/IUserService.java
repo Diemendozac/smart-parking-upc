@@ -16,7 +16,6 @@ public interface IUserService {
 
   Optional<UserEntity> findUserByEmail(String email);
   void saveUser(UserEntity user);
-  void saveAndEncode(UserEntity user);
   List<VehicleDTO> getAllUserVehiclesById(List<Long> associatedIds);
 
 

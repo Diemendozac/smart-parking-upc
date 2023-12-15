@@ -13,9 +13,5 @@ public class SmartParkingUpcProjectApplication {
 		SpringApplication.run(SmartParkingUpcProjectApplication.class, args);
 	}
 
-	@Bean
-	PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
 
 }

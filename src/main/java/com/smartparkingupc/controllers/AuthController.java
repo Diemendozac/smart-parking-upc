@@ -28,15 +28,15 @@ public class AuthController {
   private JWTTokenUtil jwtTokenUtil;
 
   @PostMapping("/authenticate")
-  public ResponseEntity<Object> createAuthenticationToken(@RequestBody UserCredential authenticationRequest) {
+  public ResponseEntity<Object> createAuthenticationToken(@RequestBody UserCredential userCredential) {
 
     try {
-      authenticate(authenticationRequest.getEmail(), authenticationRequest.getPassword());
+      authenticate(userCredential.getEmail(), userCredential.getPassword());
     } catch (Exception e) {
       return EntityResponse.generateResponse("Authentication", HttpStatus.UNAUTHORIZED,
               "Invalid credentials, please check details and try again.");
     }
-    final UserDetails userDetails = userService.loadUserByEmail(authenticationRequest.getEmail());
+    final UserDetails userDetails = userService.loadUserByEmail(userCredential.getEmail());
 
     final String token = jwtTokenUtil.generateToken(userDetails);
     final String refreshToken = jwtTokenUtil.generateRefreshToken(userDetails);
@@ -46,9 +46,9 @@ public class AuthController {
 
   }
 
-  private void authenticate(String username, String password) throws Exception {
+  private void authenticate(String email, String password) throws Exception {
     try {
-      authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+      authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
     } catch (DisabledException e) {
       throw new Exception("USER_DISABLED", e);
     } catch (BadCredentialsException e) {

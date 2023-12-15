@@ -5,6 +5,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -31,7 +32,7 @@ public class JWTRequestFilter extends OncePerRequestFilter {
 
 		final String requestTokenHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-		if (requestTokenHeader == null || requestTokenHeader.isEmpty() || !requestTokenHeader.startsWith("Bearer ")) {
+		if (requestTokenHeader == null || !requestTokenHeader.startsWith("Bearer ")) {
 			chain.doFilter(request, response);
 			return;
 		}
