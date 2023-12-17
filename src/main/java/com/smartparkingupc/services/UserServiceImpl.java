@@ -10,8 +10,6 @@ import com.smartparkingupc.security.SecurityPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -54,9 +52,7 @@ public class UserServiceImpl implements IUserService {
 
       Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
 
-      userRoles.forEach(userRole -> {
-        authorities.add(new SimpleGrantedAuthority(userRole.getRole().getName()));
-      });
+      userRoles.forEach(userRole -> authorities.add(new SimpleGrantedAuthority(userRole.getRole().getName())));
 
       return new org.springframework.security.core.userdetails.User(user.getEmail(),
               user.getPassword(), authorities);
