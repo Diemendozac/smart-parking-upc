@@ -1,5 +1,6 @@
 package com.smartparkingupc.security;
 
+import com.smartparkingupc.configuration.CustomPasswordEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,11 +34,11 @@ public class SecurityConfiguration {
 	private JWTRequestFilter jwtRequestFilter;
 	@Bean
 	public PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
+		return new CustomPasswordEncoder();
 	}
 
 	@Autowired
-	public CustomUserDetailsService customerDetailsService;
+	public UserDetailsService userDetailsService;
 
 	@Bean
 	public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
@@ -96,14 +97,14 @@ public class SecurityConfiguration {
 
 		return httpSecurity.build();
 	}
-/*
+
 	@Bean
 	public AuthenticationProvider authenticationProvider(){
 		DaoAuthenticationProvider authenticationProvider=new DaoAuthenticationProvider();
-		authenticationProvider.setUserDetailsService(customerDetailsService);
+		authenticationProvider.setUserDetailsService(userDetailsService);
 		authenticationProvider.setPasswordEncoder(passwordEncoder());
 		return authenticationProvider;
-	}*/
+	}
 
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {

@@ -54,6 +54,11 @@ public class UserController {
     return (long) -1;
   }
 
+  @GetMapping("/profile")
+  public ResponseEntity<Object> retrieveUserProfile(){
+    return EntityResponse.generateResponse("User Profile", HttpStatus.OK, userService.findCurrentUser().get());
+  }
+
   @GetMapping("/login")
   public ResponseEntity<?> findUserByEmail(@RequestHeader("LoggedInUser") String email) {
 

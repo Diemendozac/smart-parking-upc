@@ -18,5 +18,7 @@ public interface IUserService {
   void saveUser(UserEntity user);
   List<VehicleDTO> getAllUserVehiclesById(List<Long> associatedIds);
 
+  Optional<UserEntity> findCurrentUser();
+
 
 }

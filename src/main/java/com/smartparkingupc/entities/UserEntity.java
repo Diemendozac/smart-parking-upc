@@ -26,6 +26,8 @@ public class UserEntity implements UserDetails {
   private String name;
   @Column(name = "phone_number")
   private String phoneNumber;
+  @Column(name = "photo_url")
+  private String photoUrl;
 
   @ManyToMany(cascade = CascadeType.ALL)
   @JoinTable(name="confidence_circle",

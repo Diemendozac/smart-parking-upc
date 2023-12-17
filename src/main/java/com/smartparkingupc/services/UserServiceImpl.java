@@ -6,6 +6,7 @@ import com.smartparkingupc.entities.UserRole;
 import com.smartparkingupc.repositories.IUserRoleRepository;
 import com.smartparkingupc.repositories.UserRepository;
 import com.smartparkingupc.repositories.VehicleRepository;
+import com.smartparkingupc.security.SecurityPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -57,7 +58,7 @@ public class UserServiceImpl implements IUserService {
         authorities.add(new SimpleGrantedAuthority(userRole.getRole().getName()));
       });
 
-      return new org.springframework.security.core.userdetails.User(user.getUsername(),
+      return new org.springframework.security.core.userdetails.User(user.getEmail(),
               user.getPassword(), authorities);
     }
     return null;
@@ -74,6 +75,11 @@ public class UserServiceImpl implements IUserService {
     UserRole userRole = UserRole.builder().user(savedUser)
             .role(roleService.findDefaultRole()).build();
     userRoleRepository.save(userRole);
+
+  }
+
+  public Optional<UserEntity> findCurrentUser() {
+    return userRepository.findById(SecurityPrincipal.getInstance().getLoggedInPrincipal().getId());
 
   }
 
