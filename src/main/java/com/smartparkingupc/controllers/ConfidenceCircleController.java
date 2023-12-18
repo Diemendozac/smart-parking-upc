@@ -21,8 +21,8 @@ public class ConfidenceCircleController {
   @Autowired
   private IUserService userService;
 
-  @PostMapping()
-  public ResponseEntity<?> saveUserConfidenceCircle(@RequestParam String email, @RequestHeader("LoggedInUser") String loggedUserEmail) {
+  @PostMapping("/add")
+  public ResponseEntity<?> saveUserConfidenceCircle(@RequestParam String email, @RequestAttribute("LoggedInUser") String loggedUserEmail) {
 
     Optional<UserEntity> optionalUser = userService.findUserByEmail(email);
     Optional<UserEntity> loggedUserOptional = userService.findUserByEmail(loggedUserEmail);
@@ -51,8 +51,8 @@ public class ConfidenceCircleController {
 
   }
 
-  @DeleteMapping()
-  public ResponseEntity<?> deleteUserConfidenceCircle(@RequestParam String email, @RequestHeader("LoggedInUser") String loggedUserEmail) {
+  @DeleteMapping("/delete")
+  public ResponseEntity<?> deleteUserConfidenceCircle(@RequestParam String email, @RequestAttribute("LoggedInUser") String loggedUserEmail) {
 
     Optional<UserEntity> loggedUserOptional = userService.findUserByEmail(loggedUserEmail);
 

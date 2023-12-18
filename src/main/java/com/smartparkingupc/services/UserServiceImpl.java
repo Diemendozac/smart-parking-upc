@@ -3,6 +3,8 @@ package com.smartparkingupc.services;
 import com.smartparkingupc.controllers.dto.VehicleDTO;
 import com.smartparkingupc.entities.UserEntity;
 import com.smartparkingupc.entities.UserRole;
+import com.smartparkingupc.entities.Vehicle;
+import com.smartparkingupc.http.response.UserEntityByWatchmanResponse;
 import com.smartparkingupc.repositories.IUserRoleRepository;
 import com.smartparkingupc.repositories.UserRepository;
 import com.smartparkingupc.repositories.VehicleRepository;
@@ -12,10 +14,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class UserServiceImpl implements IUserService {
@@ -38,7 +37,6 @@ public class UserServiceImpl implements IUserService {
 
   @Override
   public Optional<UserEntity> findUserById(Long id) {
-
     return userRepository.findById(id);
   }
 
@@ -79,14 +77,35 @@ public class UserServiceImpl implements IUserService {
 
   }
 
+  @Override
+  public List<UserEntityByWatchmanResponse> getVehicleRelatedUsers(Long ownerId) {
+    Optional<UserEntity> optOwner = userRepository.findById(ownerId);
+    if (optOwner.isEmpty()) return null;
+    UserEntity owner = optOwner.get();
+    UserEntityByWatchmanResponse ownerByWatchmanResponse = UserEntityByWatchmanResponse.builder()
+            .name(owner.getName())
+            .email(owner.getEmail())
+            .phoneNumber(owner.getPhoneNumber())
+            .photoUrl(owner.getPhotoUrl()).build();
+    List<UserEntityByWatchmanResponse> relatedUsers = new ArrayList<>();
+    relatedUsers.add(ownerByWatchmanResponse);
+    owner.getConfidenceCircle().forEach(confidenceCircleUser -> relatedUsers.add(UserEntityByWatchmanResponse
+            .builder().name(confidenceCircleUser.getName())
+            .phoneNumber(confidenceCircleUser.getPhoneNumber())
+            .photoUrl(confidenceCircleUser.getPhotoUrl())
+            .email(confidenceCircleUser.getEmail()).build()));
+    return relatedUsers;
+  }
+
 
   @Override
   public List<VehicleDTO> getAllUserVehiclesById(List<Long> associatedIds) {
 
-    /*List<VehicleByUserEntityResponse> vehiclesResponse = vehicleRepository.findAllAssociatedVehicles(associatedIds);
-
-    return vehiclesResponse.stream()
-            .map((vehicle -> VehicleDTO.builder()
+    List<Vehicle> relatedVehicles = associatedIds.stream()
+            .map(id -> vehicleRepository.findAllByOwnerId(id))
+            .flatMap(Collection::stream)
+            .toList();
+    return relatedVehicles.stream().map((vehicle -> VehicleDTO.builder()
                             .plate(vehicle.getPlate())
                             .brand(vehicle.getBrand())
                             .model(vehicle.getModel())
@@ -95,9 +114,8 @@ public class UserServiceImpl implements IUserService {
                             .isOwner(Objects.equals(vehicle.getOwnerId(), associatedIds.get(0)))
                             .build()
                     )
-            ).toList(); */
+            ).toList();
 
-    return null;
   }
 
 }

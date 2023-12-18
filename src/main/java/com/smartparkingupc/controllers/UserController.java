@@ -1,5 +1,6 @@
 package com.smartparkingupc.controllers;
 
+import com.smartparkingupc.controllers.dto.ConfidenceCircleDTO;
 import com.smartparkingupc.controllers.dto.UserDTO;
 import com.smartparkingupc.controllers.dto.VehicleDTO;
 import com.smartparkingupc.entities.UserEntity;
@@ -44,14 +45,12 @@ public class UserController {
   }
 
   @GetMapping("/vehicles")
-  public Long findUserByVehicleRequestEmail(@RequestParam String email) {
+  public ResponseEntity<Object> findAllUserAssociatedVehicles(@RequestAttribute String LoggedInUser) {
 
-    Optional<UserEntity> optionalUser = userService.findUserByEmail(email);
-    if (optionalUser.isPresent()) {
-      return (optionalUser.get().getId());
-    }
-
-    return (long) -1;
+    Optional<UserEntity> optionalUser = userService.findUserByEmail(LoggedInUser);
+    return optionalUser.map(userEntity -> EntityResponse.generateResponse(
+            ResponseConstants.FOUND_VEHICLES_MESSAGE, HttpStatus.OK, findAssociatedVehicles(userEntity)))
+            .orElseGet(() -> EntityResponse.generateResponse(ResponseConstants.ISSUE_WHILE_FINDING_VEHICLES, HttpStatus.NO_CONTENT, "Error while finding"));
   }
 
   @GetMapping("/profile")
@@ -60,21 +59,26 @@ public class UserController {
   }
 
   @GetMapping("/login")
-  public ResponseEntity<?> findUserByEmail(@RequestHeader("LoggedInUser") String email) {
+  public ResponseEntity<?> findUserByEmail(@RequestAttribute("LoggedInUser") String email) {
 
     Optional<UserEntity> optionalUser = userService.findUserByEmail(email);
     if (optionalUser.isPresent()) {
 
       UserEntity user = optionalUser.get();
-      List<Long> associatedUsers = new ArrayList<>();
-      associatedUsers.add(user.getId());
-      user.getConfidenceCircle().forEach((confidenceCircleUser -> associatedUsers.add(confidenceCircleUser.getId())));
-      List<VehicleDTO> vehicles = userService.getAllUserVehiclesById(associatedUsers);
+      List<VehicleDTO> vehicles = findAssociatedVehicles(user);
+
+      List<ConfidenceCircleDTO> confidenceCircleDTOS = user.getConfidenceCircle()
+              .stream().map(confidenceCircleUser -> ConfidenceCircleDTO
+                      .builder().email(confidenceCircleUser.getEmail())
+                      .name(confidenceCircleUser.getName())
+                      .build()
+              ).toList();
 
       UserDTO userDTO = UserDTO.builder()
               .email(user.getEmail())
               .name(user.getName())
               .phoneNumber(user.getPhoneNumber())
+              .confidenceCircle(confidenceCircleDTOS)
               .associatedVehicles(vehicles)
               .build();
 
@@ -83,9 +87,14 @@ public class UserController {
 
     }
 
-    return EntityResponse.generateResponse(ResponseConstants.ISSUE_WHILE_FINDING_MESSAGE, HttpStatus.NO_CONTENT, "Not found");
+    return EntityResponse.generateResponse(ResponseConstants.ISSUE_WHILE_FINDING_USER, HttpStatus.NO_CONTENT, "Not found");
 
   }
 
-
+  private List<VehicleDTO> findAssociatedVehicles(UserEntity user) {
+    List<Long> associatedUsers = new ArrayList<>();
+    associatedUsers.add(user.getId());
+    user.getConfidenceCircle().forEach((confidenceCircleUser -> associatedUsers.add(confidenceCircleUser.getId())));
+    return userService.getAllUserVehiclesById(associatedUsers);
+  }
 }

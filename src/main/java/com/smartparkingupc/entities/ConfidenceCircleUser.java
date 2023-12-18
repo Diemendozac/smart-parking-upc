@@ -21,7 +21,7 @@ public class ConfidenceCircleUser {
   private Long id;
   private String email;
   private String name;
-  @Column(name = "phone_number")
   private String phoneNumber;
+  private String photoUrl;
 
 }

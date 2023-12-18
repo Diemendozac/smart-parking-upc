@@ -79,7 +79,7 @@ public class JWTTokenUtil {
 		Header<?> header = Jwts.header();
 		header.setType("JWT");
 		return Jwts.builder().setHeader((Map<String, Object>) header).setClaims(claims).setSubject(subject)
-				.setIssuer("rbacspring").setIssuedAt(new Date(System.currentTimeMillis()))
+				.setIssuer("upc-smartparking").setIssuedAt(new Date(System.currentTimeMillis()))
 				.setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
 				.signWith(SignatureAlgorithm.HS512, secret).compact();
 	}

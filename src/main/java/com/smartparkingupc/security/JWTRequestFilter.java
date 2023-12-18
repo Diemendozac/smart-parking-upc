@@ -5,7 +5,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,7 +21,6 @@ public class JWTRequestFilter extends OncePerRequestFilter {
 
 	@Autowired
 	private UserDetailsService userDetailsService;
-
 	@Autowired
 	private JWTTokenUtil jwtTokenUtil;
 
@@ -42,7 +40,8 @@ public class JWTRequestFilter extends OncePerRequestFilter {
 		UserDetails userValueObject = userDetailsService.loadUserByUsername(username);
 
 		if (jwtTokenUtil.validateToken(jwtToken, userValueObject)) {
-
+			request.setAttribute("LoggedInUser", username);
+			response.setHeader("LoggedInUser", username);
 			UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
 					userValueObject, null, userValueObject.getAuthorities());
 			usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

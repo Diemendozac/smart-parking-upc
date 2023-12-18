@@ -2,7 +2,7 @@ INSERT INTO role(name) values("ROLE_USER");
 INSERT INTO role(name) values("ROLE_WATCHMAN");
 INSERT INTO role(name) values("ROLE_ADMIN");
 
-INSERT INTO users (email, name, password, phone_number, photo_url) VALUES ('diomedesdiaz@unicesar.edu.co', 'Diomedes Díaz', 'asd1234', '3012345678', 'https://i.pravatar.com/150?img=1');
+INSERT INTO users (email, name, password, phone_number, photo_url) VALUES ('diegomedezdiaz@unicesar.edu.co', 'Diegomedez Díaz', 'asd1234', '3012345678', 'https://i.pravatar.com/150?img=1');
 
 INSERT INTO users (email, name, password, phone_number, photo_url) VALUES ('arianayrom@unicesar.edu.co', 'Ariana Romero', '4321dsa', '3019876543', 'https://i.pravatar.com/150?img=2');
 
@@ -18,7 +18,7 @@ INSERT INTO users (email, name, password, phone_number, photo_url) VALUES ('caro
 
 INSERT INTO users (email, name, password, phone_number, photo_url) VALUES ('juancamilomendezsanchez@unicesar.edu.co', 'Juan Camilo Mendez', '4321dsa', '3015432168', 'https://i.pravatar.com/4');
 
-INSERT INTO users (email, name, password, phone_number, photo_url) VALUES ('julianaramirezgomez@unicesar.edu.co', 'Juliana Ramirez', 'asd1234', '3014321679', 'https://i.pravatar.com/5');
+INSERT INTO users (email, name, password, phone_number, photo_url) VALUES ('jramireza@unicesar.edu.co', 'Juliana Ramirez', 'asd1234', '3014321679', 'https://i.pravatar.com/5');
 
 INSERT INTO user_role (id, role_id, user_id) VALUES (1, 1, 1);
 INSERT INTO user_role (id, role_id, user_id) VALUES (2, 1, 2);

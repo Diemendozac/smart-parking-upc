@@ -1,4 +1,4 @@
-package com.smartparkingupc.controllers.dto;
+package com.smartparkingupc.http.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,10 +6,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ConfidenceCircleDTO {
-  private String email;
+@Builder
+public class UserEntityByWatchmanResponse {
   private String name;
+  private String email;
+  private String phoneNumber;
+  private String photoUrl;
 }
