@@ -41,7 +41,6 @@ public class JWTRequestFilter extends OncePerRequestFilter {
 
 		if (jwtTokenUtil.validateToken(jwtToken, userValueObject)) {
 			request.setAttribute("LoggedInUser", username);
-			response.setHeader("LoggedInUser", username);
 			UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
 					userValueObject, null, userValueObject.getAuthorities());
 			usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

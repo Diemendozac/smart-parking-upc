@@ -48,7 +48,7 @@ public class SecurityConfiguration {
 	@Bean
 	public SecurityFilterChain securityFilterChainGlobalAPI(HttpSecurity httpSecurity) throws Exception {
 		sharedSecurityConfiguration(httpSecurity);
-		httpSecurity.securityMatcher("user", "admin").authorizeHttpRequests(auth -> auth.anyRequest().authenticated()).addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+		httpSecurity.securityMatcher("user", "watchman","admin").authorizeHttpRequests(auth -> auth.anyRequest().authenticated()).addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
 		return httpSecurity.build();
 	}
@@ -56,8 +56,8 @@ public class SecurityConfiguration {
 	@Bean
 	public SecurityFilterChain securityFilterChainGlobalAdminAPI(HttpSecurity httpSecurity) throws Exception {
 		sharedSecurityConfiguration(httpSecurity);
-		httpSecurity.securityMatcher("admin/**").authorizeHttpRequests(auth -> auth.anyRequest()
-		.hasRole("ADMIN")).addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+		httpSecurity.securityMatcher("/watchman/**").authorizeHttpRequests(auth -> auth.anyRequest()
+		.hasRole("WATCHMAN")).addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
 		return httpSecurity.build();
 	}
@@ -65,7 +65,7 @@ public class SecurityConfiguration {
 	@Bean
 	public SecurityFilterChain securityFilterChainGlobalUserProfileAPI(HttpSecurity httpSecurity) throws Exception {
 		sharedSecurityConfiguration(httpSecurity);
-		httpSecurity.securityMatcher("user/authenticate").authorizeHttpRequests(auth -> auth.anyRequest()
+		httpSecurity.securityMatcher("/user/authenticate").authorizeHttpRequests(auth -> auth.anyRequest()
 		.hasRole("USER")).addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
 		return httpSecurity.build();

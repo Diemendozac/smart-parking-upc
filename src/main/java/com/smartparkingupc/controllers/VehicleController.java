@@ -39,7 +39,7 @@ public class VehicleController {
 
 
   @PostMapping("/save")
-  public ResponseEntity<?> saveVehicle(@RequestHeader("LoggedInUser") String email, @RequestBody VehicleDTO vehicleDTO) {
+  public ResponseEntity<?> saveVehicle(@RequestAttribute("LoggedInUser") String email, @RequestBody VehicleDTO vehicleDTO) {
 
     Long requestId = vehicleService.findVehicleIdByUserEmail(email);
     if (requestId == -1) return EntityResponse.generateResponse(
@@ -60,7 +60,7 @@ public class VehicleController {
   }
 
   @PutMapping("/update")
-  public ResponseEntity<?> updateVehicle(@RequestHeader("LoggedInUser") String email, @RequestBody VehicleDTO vehicleDTO) {
+  public ResponseEntity<?> updateVehicle(@RequestAttribute("LoggedInUser") String email, @RequestBody VehicleDTO vehicleDTO) {
 
     Optional<Vehicle> optVehicle = vehicleService.findVehicleByPlate(vehicleDTO.getPlate());
     Long requestId = vehicleService.findVehicleIdByUserEmail(email);
@@ -81,7 +81,7 @@ public class VehicleController {
   }
 
   @DeleteMapping("/delete")
-  public ResponseEntity<?> deleteVehicle(@RequestHeader("LoggedInUser") String email, @RequestParam String vehiclePlate) {
+  public ResponseEntity<?> deleteVehicle(@RequestAttribute("LoggedInUser") String email, @RequestParam String vehiclePlate) {
 
     Optional<Vehicle> optVehicle = vehicleService.findVehicleByPlate(vehiclePlate);
     Long requestId = vehicleService.findVehicleIdByUserEmail(email);

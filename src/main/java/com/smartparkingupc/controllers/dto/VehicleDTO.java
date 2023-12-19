@@ -14,6 +14,6 @@ public class VehicleDTO {
   private String brand;
   private int model;
   private String line;
-  private String color;
+  //private String color;
   private boolean isOwner;
 }

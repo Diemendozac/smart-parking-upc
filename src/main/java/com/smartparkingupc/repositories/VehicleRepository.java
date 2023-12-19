@@ -16,7 +16,7 @@ public interface VehicleRepository extends CrudRepository<Vehicle, Long> {
   Optional<Vehicle> findByPlate(String plate);
   Optional<Long> findOwnerIdByPlate(String plate);
   @Query("SELECT v FROM Vehicle v where v.isParked = true")
-  List<VehicleDTO> findAllParkedVehicles();
+  List<Vehicle> findAllParkedVehicles();
   void deleteByPlate(String plate);
 
 }

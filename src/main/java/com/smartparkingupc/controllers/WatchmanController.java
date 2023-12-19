@@ -10,13 +10,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Optional;
 
-@RestController("/watchman")
+@RestController
+@RequestMapping("/watchman")
 public class WatchmanController {
 
   @Autowired
@@ -25,7 +27,7 @@ public class WatchmanController {
   private IVehicleService vehicleService;
 
 
-  @GetMapping("/vehicle/related-users")
+  @GetMapping("/related-users")
   public ResponseEntity<?> findAllVehicleRelatedUsersByPlate (@RequestParam String plate) {
 
     Optional<Vehicle> optVehicle = vehicleService.findVehicleByPlate(plate);
@@ -36,9 +38,8 @@ public class WatchmanController {
 
   }
 
-  @GetMapping("/vehicle/parked-vehicles")
+  @GetMapping("/parked-vehicles")
   public ResponseEntity<?> findAllParkedVehicles() {
-
     return EntityResponse.generateResponse("Vehículos parqueados:",
             HttpStatus.OK, vehicleService.findAllParkedVehicles());
 

@@ -28,7 +28,7 @@ INSERT INTO user_role (id, role_id, user_id) VALUES (5, 1, 5);
 INSERT INTO user_role (id, role_id, user_id) VALUES (6, 1, 6);
 INSERT INTO user_role (id, role_id, user_id) VALUES (7, 1, 7);
 INSERT INTO user_role (id, role_id, user_id) VALUES (8, 2, 8);
-INSERT INTO user_role (id, role_id, user_id) VALUES (9, 2, 9);
+INSERT INTO user_role (id, role_id, user_id) VALUES (9, 3, 9);
 
 INSERT INTO vehicle (model, owner_id, brand, line, plate,is_parked) VALUES (2015, 1, 'YAMAHA', 'MX 125', 'DSA123', true);
 INSERT INTO vehicle (model, owner_id, brand, line, plate,is_parked) VALUES (2018, 1, 'BAJAJ', 'BOXER', 'ROB121', true);

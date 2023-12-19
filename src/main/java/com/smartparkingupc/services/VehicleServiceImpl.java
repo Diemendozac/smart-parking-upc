@@ -57,7 +57,14 @@ public class VehicleServiceImpl implements IVehicleService {
 
   @Override
   public List<VehicleDTO> findAllParkedVehicles() {
-    return vehicleRepository.findAllParkedVehicles();
+    return vehicleRepository.findAllParkedVehicles()
+            .stream().map(vehicle -> VehicleDTO.builder()
+                    .plate(vehicle.getPlate())
+                    .brand(vehicle.getBrand())
+                    .model(vehicle.getModel())
+                    .line(vehicle.getLine())
+                    .build()
+            ).toList();
   }
 
 }
