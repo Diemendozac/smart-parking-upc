@@ -63,11 +63,11 @@ public class JWTTokenUtil {
 	}
 
 	// generate token for user
-	public String generateRefreshToken(UserDetails userDetails) {
+	/*public String generateRefreshToken(UserDetails userDetails) {
 		Map<String, Object> claims = new HashMap<>();
 		claims.put("role", userDetails.getAuthorities());
 		return doGenerateRefreshToken(claims, userDetails.getUsername());
-	}
+	}*/
 
 	// while creating the token -
 	// 1. Define claims of the token, like Issuer, Expiration, Subject, and the ID
@@ -85,14 +85,14 @@ public class JWTTokenUtil {
 	}
 
 	// refresh token
-	private String doGenerateRefreshToken(Map<String, Object> claims, String subject) {
+	/*private String doGenerateRefreshToken(Map<String, Object> claims, String subject) {
 		Header<?> header = Jwts.header();
 		header.setType("JWT");
 		return Jwts.builder().setHeader((Map<String, Object>) header).setClaims(claims).setSubject(subject)
 				.setIssuer("rbackspring").setIssuedAt(new Date(System.currentTimeMillis()))
 				.setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 2 * 1000))
 				.signWith(SignatureAlgorithm.HS512, secret).compact();
-	}
+	}*/
 
 	// validate token
 	public Boolean validateToken(String token, UserDetails userDetails) {

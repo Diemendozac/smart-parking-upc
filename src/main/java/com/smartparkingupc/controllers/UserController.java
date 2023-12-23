@@ -48,13 +48,12 @@ public class UserController {
   public ResponseEntity<Object> findAllUserAssociatedVehicles(@RequestAttribute String LoggedInUser) {
 
     Optional<UserEntity> optionalUser = userService.findUserByEmail(LoggedInUser);
-    return optionalUser.map(userEntity -> EntityResponse.generateResponse(
-            ResponseConstants.FOUND_VEHICLES_MESSAGE, HttpStatus.OK, findAssociatedVehicles(userEntity)))
+    return optionalUser.<ResponseEntity<Object>>map(userEntity -> ResponseEntity.ok(findAssociatedVehicles(userEntity)))
             .orElseGet(() -> EntityResponse.generateResponse(ResponseConstants.ISSUE_WHILE_FINDING_VEHICLES, HttpStatus.NO_CONTENT, "Error while finding"));
   }
 
   @GetMapping("/profile")
-  public ResponseEntity<Object> retrieveUserProfile(){
+  public ResponseEntity<Object> retrieveUserProfile() {
     return EntityResponse.generateResponse("User Profile", HttpStatus.OK, userService.findCurrentUser().get());
   }
 
@@ -82,8 +81,7 @@ public class UserController {
               .associatedVehicles(vehicles)
               .build();
 
-      return EntityResponse.generateResponse(
-              ResponseConstants.FOUND_USER_MESSAGE, HttpStatus.OK, userDTO);
+      return ResponseEntity.ok(userDTO);
 
     }
 

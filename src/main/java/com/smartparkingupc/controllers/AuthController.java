@@ -39,10 +39,9 @@ public class AuthController {
     final UserDetails userDetails = userService.loadUserByEmail(userCredential.getEmail());
 
     final String token = jwtTokenUtil.generateToken(userDetails);
-    final String refreshToken = jwtTokenUtil.generateRefreshToken(userDetails);
 
     return EntityResponse.generateResponse("Authentication", HttpStatus.OK,
-            new AuthenticationResponse(token, refreshToken));
+            new AuthenticationResponse(token));
 
   }
 
