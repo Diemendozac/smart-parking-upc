@@ -40,8 +40,7 @@ public class AuthController {
 
     final String token = jwtTokenUtil.generateToken(userDetails);
 
-    return EntityResponse.generateResponse("Authentication", HttpStatus.OK,
-            new AuthenticationResponse(token));
+    return ResponseEntity.ok(new AuthenticationResponse(token));
 
   }
 
