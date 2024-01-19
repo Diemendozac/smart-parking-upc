@@ -1,6 +1,5 @@
 package com.smartparkingupc.repositories;
 
-import com.smartparkingupc.controllers.dto.VehicleDTO;
 import com.smartparkingupc.entities.Vehicle;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -15,8 +14,8 @@ public interface VehicleRepository extends CrudRepository<Vehicle, Long> {
   List<Vehicle> findAllByOwnerId(Long ownerId);
   Optional<Vehicle> findByPlate(String plate);
   Optional<Long> findOwnerIdByPlate(String plate);
-  @Query("SELECT v FROM Vehicle v where v.isParked = true")
+  @Query("SELECT v FROM Vehicle v WHERE v.isParked = true")
   List<Vehicle> findAllParkedVehicles();
-  void deleteByPlate(String plate);
+  void deleteVehicleByPlate(String plate);
 
 }

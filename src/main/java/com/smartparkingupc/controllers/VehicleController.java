@@ -87,8 +87,11 @@ public class VehicleController {
     Long requestId = vehicleService.findVehicleIdByUserEmail(email);
     if (optVehicle.isEmpty()) return ResponseEntity.badRequest().build();
     if (requestId == -1) return ResponseEntity.internalServerError().build();
-    if (requestId.equals(optVehicle.get().getId())) vehicleService.deleteByPlate(vehiclePlate);
-    return ResponseEntity.ok().build();
+    if (requestId.equals(optVehicle.get().getOwnerId())) {
+      vehicleService.deleteByPlate(vehiclePlate);
+      return ResponseEntity.ok().build();
+    }
+    return new ResponseEntity<String>("Unauthorized", HttpStatus.UNAUTHORIZED);
 
   }
 
