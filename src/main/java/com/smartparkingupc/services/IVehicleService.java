@@ -13,7 +13,7 @@ public interface IVehicleService {
   void save(Vehicle vehicle, Long ownerId);
   void updateVehicle(Vehicle vehicle);
   void deleteByPlate(String plate);
-  Long findVehicleIdByUserEmail(String email);
+  Long findOwnerRequestIdByUserEmail(String email);
   List<VehicleDTO> findAllParkedVehicles();
 
 }

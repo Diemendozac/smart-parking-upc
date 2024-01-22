@@ -51,7 +51,7 @@ public class VehicleServiceImpl implements IVehicleService {
   }
 
   @Override
-  public Long findVehicleIdByUserEmail(String email) {
+  public Long findOwnerRequestIdByUserEmail(String email) {
     Optional<UserEntity> optUser = userRepository.findByEmail(email);
     if (optUser.isPresent()) return optUser.get().getId();
     return -1L;

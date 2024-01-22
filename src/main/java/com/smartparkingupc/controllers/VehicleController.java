@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Objects;
 import java.util.Optional;
 
 @RestController
@@ -41,13 +40,13 @@ public class VehicleController {
   @PostMapping("/save")
   public ResponseEntity<?> saveVehicle(@RequestAttribute("LoggedInUser") String email, @RequestBody VehicleDTO vehicleDTO) {
 
-    Long requestId = vehicleService.findVehicleIdByUserEmail(email);
+    Long requestId = vehicleService.findOwnerRequestIdByUserEmail(email);
     if (requestId == -1) return EntityResponse.generateResponse(
             ResponseConstants.ISSUE_WHILE_SAVING_VEHICLE, HttpStatus.NOT_FOUND, "Not found"
     );
 
     Vehicle vehicle = Vehicle.builder()
-            .plate(vehicleDTO.getPlate())
+            .plate(vehicleDTO.getPlate().toUpperCase())
             .model(vehicleDTO.getModel())
             .line(vehicleDTO.getLine())
             .brand(vehicleDTO.getBrand())
@@ -62,18 +61,20 @@ public class VehicleController {
   @PutMapping("/update")
   public ResponseEntity<?> updateVehicle(@RequestAttribute("LoggedInUser") String email, @RequestBody VehicleDTO vehicleDTO) {
 
-    Optional<Vehicle> optVehicle = vehicleService.findVehicleByPlate(vehicleDTO.getPlate());
-    Long requestId = vehicleService.findVehicleIdByUserEmail(email);
+    Optional<Vehicle> optVehicle = vehicleService.findVehicleByPlate(vehicleDTO.getPlate().toUpperCase());
+    Long requestId = vehicleService.findOwnerRequestIdByUserEmail(email);
     if (optVehicle.isEmpty()) return ResponseEntity.noContent().build();
     if (requestId == -1) return ResponseEntity.internalServerError().build();
     Vehicle vehicle = optVehicle.get();
-    if (!Objects.equals(vehicle.getOwnerId(), requestId)) return ResponseEntity.badRequest().build();
+    if (!requestId.equals(vehicle.getOwnerId())) return new ResponseEntity<>("No eres el dueño del vehículo", HttpStatus.UNAUTHORIZED);
     Vehicle updatedVehicle = Vehicle.builder()
             .id(vehicle.getId())
             .plate(vehicle.getPlate())
             .brand(vehicleDTO.getBrand())
             .model(vehicleDTO.getModel())
             .line(vehicleDTO.getLine())
+            .ownerId(requestId)
+            .isParked(vehicle.isParked())
             .build();
     vehicleService.updateVehicle(updatedVehicle);
 
@@ -84,14 +85,14 @@ public class VehicleController {
   public ResponseEntity<?> deleteVehicle(@RequestAttribute("LoggedInUser") String email, @RequestParam String vehiclePlate) {
 
     Optional<Vehicle> optVehicle = vehicleService.findVehicleByPlate(vehiclePlate);
-    Long requestId = vehicleService.findVehicleIdByUserEmail(email);
+    Long requestId = vehicleService.findOwnerRequestIdByUserEmail(email);
     if (optVehicle.isEmpty()) return ResponseEntity.badRequest().build();
     if (requestId == -1) return ResponseEntity.internalServerError().build();
     if (requestId.equals(optVehicle.get().getOwnerId())) {
       vehicleService.deleteByPlate(vehiclePlate);
       return ResponseEntity.ok().build();
     }
-    return new ResponseEntity<String>("Unauthorized", HttpStatus.UNAUTHORIZED);
+    return new ResponseEntity<>("Unauthorized", HttpStatus.UNAUTHORIZED);
 
   }
 
