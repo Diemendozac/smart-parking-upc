@@ -9,8 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 
 @Service
@@ -68,6 +67,34 @@ public class VehicleServiceImpl implements IVehicleService {
                     .build()
             ).toList();
   }
+
+  @Override
+  public List<VehicleDTO> findAssociatedVehicles(Long requestId) {
+
+    ArrayList<Long> associatedIds = new ArrayList<>();
+    Optional<UserEntity> optUser = userRepository.findById(requestId);
+    if ( optUser.isEmpty() ) return null;
+    UserEntity user = optUser.get();
+    associatedIds.add(requestId);
+    user.getConfidenceCircle().forEach((confidenceCircleUser -> associatedIds.add(confidenceCircleUser.getId())));
+
+    List<Vehicle> relatedVehicles = associatedIds.stream()
+            .map(id -> vehicleRepository.findAllByOwnerId(id))
+            .flatMap(Collection::stream)
+            .toList();
+    return relatedVehicles.stream().map((vehicle -> VehicleDTO.builder()
+                    .plate(vehicle.getPlate())
+                    .brand(vehicle.getBrand())
+                    .model(vehicle.getModel())
+                    .line(vehicle.getLine())
+                    //.color(vehicle.getColor())
+                    .isOwner(Objects.equals(vehicle.getOwnerId(), associatedIds.get(0)))
+                    .build()
+            )
+    ).toList();
+
+  }
+
 
 }
 

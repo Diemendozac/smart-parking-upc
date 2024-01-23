@@ -1,13 +1,10 @@
 package com.smartparkingupc.services;
 
-import com.smartparkingupc.controllers.dto.VehicleDTO;
 import com.smartparkingupc.entities.UserEntity;
 import com.smartparkingupc.entities.UserRole;
-import com.smartparkingupc.entities.Vehicle;
 import com.smartparkingupc.http.response.UserEntityByWatchmanResponse;
 import com.smartparkingupc.repositories.IUserRoleRepository;
 import com.smartparkingupc.repositories.UserRepository;
-import com.smartparkingupc.repositories.VehicleRepository;
 import com.smartparkingupc.security.SecurityPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -24,8 +21,6 @@ public class UserServiceImpl implements IUserService {
   @Autowired
   private RoleServiceImpl roleService;
 
-  @Autowired
-  private VehicleRepository vehicleRepository;
   @Autowired
   private IUserRoleRepository userRoleRepository;
 
@@ -95,27 +90,6 @@ public class UserServiceImpl implements IUserService {
             .photoUrl(confidenceCircleUser.getPhotoUrl())
             .email(confidenceCircleUser.getEmail()).build()));
     return relatedUsers;
-  }
-
-
-  @Override
-  public List<VehicleDTO> getAllUserVehiclesById(List<Long> associatedIds) {
-
-    List<Vehicle> relatedVehicles = associatedIds.stream()
-            .map(id -> vehicleRepository.findAllByOwnerId(id))
-            .flatMap(Collection::stream)
-            .toList();
-    return relatedVehicles.stream().map((vehicle -> VehicleDTO.builder()
-                            .plate(vehicle.getPlate())
-                            .brand(vehicle.getBrand())
-                            .model(vehicle.getModel())
-                            .line(vehicle.getLine())
-                            //.color(vehicle.getColor())
-                            .isOwner(Objects.equals(vehicle.getOwnerId(), associatedIds.get(0)))
-                            .build()
-                    )
-            ).toList();
-
   }
 
 }

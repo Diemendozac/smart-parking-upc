@@ -44,7 +44,7 @@ public class ConfidenceCircleController {
       loggedUser.setConfidenceCircle(confidenceCircle);
       userService.saveUser(loggedUser);
 
-      return EntityResponse.generateResponse(ResponseConstants.CONFIDENCE_USER_ADDED, HttpStatus.OK, loggedUser.getConfidenceCircle());
+      return ResponseEntity.ok(loggedUser);
     }
 
     return EntityResponse.generateResponse(ResponseConstants.ISSUE_WHILE_ADDING_CONFIDENCE_USER, HttpStatus.BAD_REQUEST, "Bad Request");
@@ -67,11 +67,7 @@ public class ConfidenceCircleController {
       ArrayList<ConfidenceCircleUser> confidenceCircle = new ArrayList<>(confidenceCircleUserList);
       loggedUser.setConfidenceCircle(confidenceCircle);
       userService.saveUser(loggedUser);
-      return EntityResponse.generateResponse(
-              ResponseConstants.CONFIDENCE_USER_DELETED,
-              HttpStatus.OK,
-              loggedUser.getConfidenceCircle()
-      );
+      return ResponseEntity.ok(loggedUser);
 
     }
 

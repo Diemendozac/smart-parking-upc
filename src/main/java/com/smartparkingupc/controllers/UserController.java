@@ -6,6 +6,7 @@ import com.smartparkingupc.controllers.dto.VehicleDTO;
 import com.smartparkingupc.entities.UserEntity;
 import com.smartparkingupc.services.IUserService;
 import com.smartparkingupc.http.response.EntityResponse;
+import com.smartparkingupc.services.IVehicleService;
 import com.smartparkingupc.utils.EmailValidator;
 import com.smartparkingupc.utils.ResponseConstants;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,6 +24,9 @@ public class UserController {
 
   @Autowired
   private IUserService userService;
+
+  @Autowired
+  private IVehicleService vehicleService;
 
   @Autowired
   PasswordEncoder passwordEncoder;
@@ -48,7 +51,7 @@ public class UserController {
   public ResponseEntity<Object> findAllUserAssociatedVehicles(@RequestAttribute String LoggedInUser) {
 
     Optional<UserEntity> optionalUser = userService.findUserByEmail(LoggedInUser);
-    return optionalUser.<ResponseEntity<Object>>map(userEntity -> ResponseEntity.ok(findAssociatedVehicles(userEntity)))
+    return optionalUser.<ResponseEntity<Object>>map(userEntity -> ResponseEntity.ok(vehicleService.findAssociatedVehicles(userEntity.getId())))
             .orElseGet(() -> EntityResponse.generateResponse(ResponseConstants.ISSUE_WHILE_FINDING_VEHICLES, HttpStatus.NO_CONTENT, "Error while finding"));
   }
 
@@ -64,7 +67,7 @@ public class UserController {
     if (optionalUser.isPresent()) {
 
       UserEntity user = optionalUser.get();
-      List<VehicleDTO> vehicles = findAssociatedVehicles(user);
+      List<VehicleDTO> vehicles = vehicleService.findAssociatedVehicles(user.getId());
 
       List<ConfidenceCircleDTO> confidenceCircleDTOS = user.getConfidenceCircle()
               .stream().map(confidenceCircleUser -> ConfidenceCircleDTO
@@ -89,10 +92,4 @@ public class UserController {
 
   }
 
-  private List<VehicleDTO> findAssociatedVehicles(UserEntity user) {
-    List<Long> associatedUsers = new ArrayList<>();
-    associatedUsers.add(user.getId());
-    user.getConfidenceCircle().forEach((confidenceCircleUser -> associatedUsers.add(confidenceCircleUser.getId())));
-    return userService.getAllUserVehiclesById(associatedUsers);
-  }
 }

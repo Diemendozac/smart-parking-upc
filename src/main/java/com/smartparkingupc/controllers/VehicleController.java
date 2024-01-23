@@ -45,6 +45,9 @@ public class VehicleController {
             ResponseConstants.ISSUE_WHILE_SAVING_VEHICLE, HttpStatus.NOT_FOUND, "Not found"
     );
 
+    Optional<Vehicle> optRequestVehicle = vehicleService.findVehicleByPlate(vehicleDTO.getPlate());
+    if ( optRequestVehicle.isPresent()) return new ResponseEntity<>("El vehículo ya existe", HttpStatus.UNAUTHORIZED);
+
     Vehicle vehicle = Vehicle.builder()
             .plate(vehicleDTO.getPlate().toUpperCase())
             .model(vehicleDTO.getModel())
@@ -54,8 +57,7 @@ public class VehicleController {
             .isParked(false)
             .build();
     vehicleService.save(vehicle, requestId);
-    return EntityResponse.generateResponse(
-            ResponseConstants.SAVED_VEHICLE_MESSAGE, HttpStatus.OK, "Saved Vehicle");
+    return ResponseEntity.ok(vehicleService.findAssociatedVehicles(requestId));
   }
 
   @PutMapping("/update")
@@ -78,7 +80,7 @@ public class VehicleController {
             .build();
     vehicleService.updateVehicle(updatedVehicle);
 
-    return ResponseEntity.ok().build();
+    return ResponseEntity.ok(vehicleService.findAssociatedVehicles(requestId));
   }
 
   @DeleteMapping("/delete")
@@ -90,7 +92,7 @@ public class VehicleController {
     if (requestId == -1) return ResponseEntity.internalServerError().build();
     if (requestId.equals(optVehicle.get().getOwnerId())) {
       vehicleService.deleteByPlate(vehiclePlate);
-      return ResponseEntity.ok().build();
+      return ResponseEntity.ok(vehicleService.findAssociatedVehicles(requestId));
     }
     return new ResponseEntity<>("Unauthorized", HttpStatus.UNAUTHORIZED);
 
