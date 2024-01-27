@@ -70,6 +70,16 @@ public class SecurityConfiguration {
 
 		return httpSecurity.build();
 	}
+
+	@Bean
+	public SecurityFilterChain securityFilterChainConfidenceCircleAPI(HttpSecurity httpSecurity) throws Exception {
+		sharedSecurityConfiguration(httpSecurity);
+		httpSecurity.securityMatcher("/confidence-circle/**").authorizeHttpRequests(auth -> auth.anyRequest()
+						.hasRole("USER")).addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+
+		return httpSecurity.build();
+	}
+
 	@Bean
 	public SecurityFilterChain securityFilterChainLoginAPI(HttpSecurity httpSecurity) throws Exception {
 		sharedSecurityConfiguration(httpSecurity);

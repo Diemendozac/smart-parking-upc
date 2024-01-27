@@ -24,11 +24,13 @@ public class ConfidenceCircleController {
   @PostMapping("/add")
   public ResponseEntity<?> saveUserConfidenceCircle(@RequestParam String email, @RequestAttribute("LoggedInUser") String loggedUserEmail) {
 
-    Optional<UserEntity> optionalUser = userService.findUserByEmail(email);
+    Optional<UserEntity> optionalRequestUser = userService.findUserByEmail(email);
+    if(optionalRequestUser.isEmpty()) return ResponseEntity.notFound().build();
+
     Optional<UserEntity> loggedUserOptional = userService.findUserByEmail(loggedUserEmail);
 
-    if (optionalUser.isPresent() && loggedUserOptional.isPresent()) {
-      UserEntity userToAdd = optionalUser.get();
+    if (loggedUserOptional.isPresent()) {
+      UserEntity userToAdd = optionalRequestUser.get();
       UserEntity loggedUser = loggedUserOptional.get();
       List<ConfidenceCircleUser> confidenceCircle = loggedUser.getConfidenceCircle();
       if (confidenceCircle.size() > 2) return ResponseEntity.badRequest().build();
@@ -44,10 +46,9 @@ public class ConfidenceCircleController {
       loggedUser.setConfidenceCircle(confidenceCircle);
       userService.saveUser(loggedUser);
 
-      return ResponseEntity.ok(loggedUser);
+      return ResponseEntity.ok(loggedUser.getConfidenceCircle());
     }
-
-    return EntityResponse.generateResponse(ResponseConstants.ISSUE_WHILE_ADDING_CONFIDENCE_USER, HttpStatus.BAD_REQUEST, "Bad Request");
+    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
   }
 
@@ -67,7 +68,7 @@ public class ConfidenceCircleController {
       ArrayList<ConfidenceCircleUser> confidenceCircle = new ArrayList<>(confidenceCircleUserList);
       loggedUser.setConfidenceCircle(confidenceCircle);
       userService.saveUser(loggedUser);
-      return ResponseEntity.ok(loggedUser);
+      return ResponseEntity.ok(loggedUser.getConfidenceCircle());
 
     }
 
