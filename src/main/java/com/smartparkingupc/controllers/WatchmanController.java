@@ -44,4 +44,5 @@ public class WatchmanController {
             HttpStatus.OK, vehicleService.findAllParkedVehicles());
 
   }
+
 }

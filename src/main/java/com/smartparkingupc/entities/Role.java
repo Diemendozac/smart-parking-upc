@@ -4,15 +4,17 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 
 @Entity
-@Table(name = "Role")
+@Table(name = "role")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
 public class Role implements Serializable{
 
+	@Serial
 	private static final long serialVersionUID = 5926468583005150707L;
 	
 	@Id

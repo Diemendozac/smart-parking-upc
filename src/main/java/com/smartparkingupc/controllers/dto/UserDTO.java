@@ -1,6 +1,7 @@
 package com.smartparkingupc.controllers.dto;
 
 
+import com.smartparkingupc.entities.ConfidenceCircleRequests;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,6 +19,7 @@ public class UserDTO {
   private String name;
   private String phoneNumber;
   private List<VehicleDTO> associatedVehicles;
+  private List<ConfidenceCircleRequests> confidenceRequests;
   private List<ConfidenceCircleDTO> confidenceCircle;
 
 }

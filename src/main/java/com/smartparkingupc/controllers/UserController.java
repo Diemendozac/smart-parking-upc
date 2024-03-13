@@ -3,6 +3,7 @@ package com.smartparkingupc.controllers;
 import com.smartparkingupc.controllers.dto.ConfidenceCircleDTO;
 import com.smartparkingupc.controllers.dto.UserDTO;
 import com.smartparkingupc.controllers.dto.VehicleDTO;
+import com.smartparkingupc.entities.ConfidenceCircleRequests;
 import com.smartparkingupc.entities.UserEntity;
 import com.smartparkingupc.services.IUserService;
 import com.smartparkingupc.http.response.EntityResponse;
@@ -76,11 +77,19 @@ public class UserController {
                       .build()
               ).toList();
 
+      List<ConfidenceCircleRequests> confidenceRequestDTOS = user.getConfidenceRequest()
+              .stream().map(confidenceCircleUser -> ConfidenceCircleRequests
+                      .builder().email(confidenceCircleUser.getEmail())
+                      .name(confidenceCircleUser.getName())
+                      .build()
+              ).toList();
+
       UserDTO userDTO = UserDTO.builder()
               .email(user.getEmail())
               .name(user.getName())
               .phoneNumber(user.getPhoneNumber())
               .confidenceCircle(confidenceCircleDTOS)
+              .confidenceRequests(confidenceRequestDTOS)
               .associatedVehicles(vehicles)
               .build();
 

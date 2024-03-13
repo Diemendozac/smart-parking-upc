@@ -3,6 +3,7 @@ package com.smartparkingupc.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -15,6 +16,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Table(name = "users")
 public class UserEntity implements UserDetails {
 
@@ -40,6 +42,21 @@ public class UserEntity implements UserDetails {
           inverseJoinColumns=@JoinColumn(name="user_id")
   )
   private List<ConfidenceCircleUser> confidenceCircleOf;
+
+  @ManyToMany(cascade = CascadeType.ALL)
+  @JoinTable(name="confidence_requests",
+          joinColumns=@JoinColumn(name="user_id"),
+          inverseJoinColumns=@JoinColumn(name="confidence_requests_id")
+  )
+  private List<ConfidenceCircleRequests> confidenceRequest;
+
+  @ManyToMany
+  @JoinTable(name="confidence_requests",
+          joinColumns=@JoinColumn(name="confidence_requests_id"),
+          inverseJoinColumns=@JoinColumn(name="user_id")
+  )
+  private List<ConfidenceCircleRequests> confidenceRequestOf;
+
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {

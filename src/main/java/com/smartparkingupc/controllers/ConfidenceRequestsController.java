@@ -1,7 +1,6 @@
 package com.smartparkingupc.controllers;
 
 import com.smartparkingupc.entities.ConfidenceCircleRequests;
-import com.smartparkingupc.entities.ConfidenceCircleUser;
 import com.smartparkingupc.entities.UserEntity;
 import com.smartparkingupc.http.response.EntityResponse;
 import com.smartparkingupc.services.IUserService;
@@ -16,60 +15,59 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/confidence-circle")
-public class ConfidenceCircleController {
+@RequestMapping("confidence-request")
+public class ConfidenceRequestsController {
 
   @Autowired
   private IUserService userService;
 
   @PostMapping("/add")
-  public ResponseEntity<?> saveUserConfidenceCircle(@RequestParam String email, @RequestAttribute("LoggedInUser") String loggedUserEmail) {
+  public ResponseEntity<?> saveConfidenceCircleRequest(@RequestParam String email, @RequestAttribute("LoggedInUser") String loggedUserEmail) {
 
     Optional<UserEntity> optionalRequestUser = userService.findUserByEmail(email);
     if(optionalRequestUser.isEmpty()) return ResponseEntity.notFound().build();
-    UserEntity loggedUser = optionalRequestUser.get();
-    if(findUserRequest(loggedUser.getConfidenceRequest(), email)) return ResponseEntity.badRequest().build();
+
     Optional<UserEntity> loggedUserOptional = userService.findUserByEmail(loggedUserEmail);
 
     if (loggedUserOptional.isPresent()) {
       UserEntity userToAdd = optionalRequestUser.get();
-      List<ConfidenceCircleUser> confidenceCircle = loggedUser.getConfidenceCircle();
-      if (confidenceCircle.size() > 2) return ResponseEntity.badRequest().build();
+      UserEntity loggedUser = loggedUserOptional.get();
+      List<ConfidenceCircleRequests> confidenceRequests = loggedUser.getConfidenceRequest();
+      if (confidenceRequests.size() > 3) return ResponseEntity.badRequest().build();
 
-      ConfidenceCircleUser confidenceCircleUser = ConfidenceCircleUser.builder()
+      ConfidenceCircleRequests confidenceCircleRequest = ConfidenceCircleRequests.builder()
               .id(userToAdd.getId())
               .name(userToAdd.getName())
               .email(userToAdd.getEmail())
-              .phoneNumber(userToAdd.getPhoneNumber())
               .build();
 
-      confidenceCircle.add(confidenceCircleUser);
-      loggedUser.setConfidenceCircle(confidenceCircle);
+      confidenceRequests.add(confidenceCircleRequest);
+      loggedUser.setConfidenceRequest(confidenceRequests);
       userService.saveUser(loggedUser);
 
-      return ResponseEntity.ok(loggedUser.getConfidenceCircle());
+      return ResponseEntity.ok(loggedUser.getConfidenceRequest());
     }
     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
   }
 
   @DeleteMapping("/delete")
-  public ResponseEntity<?> deleteUserConfidenceCircle(@RequestParam String email, @RequestAttribute("LoggedInUser") String loggedUserEmail) {
+  public ResponseEntity<?> deleteUserConfidenceRequest(@RequestParam String email, @RequestAttribute("LoggedInUser") String loggedUserEmail) {
 
     Optional<UserEntity> loggedUserOptional = userService.findUserByEmail(loggedUserEmail);
 
     if (loggedUserOptional.isPresent()) {
       UserEntity loggedUser = loggedUserOptional.get();
 
-      List<ConfidenceCircleUser> confidenceCircleUserList = loggedUser.getConfidenceCircle()
+      List<ConfidenceCircleRequests> confidenceCircleUserList = loggedUser.getConfidenceRequest()
               .stream()
               .filter(
                       (confidenceCircleUser -> !confidenceCircleUser.getEmail().equals(email))
               ).toList();
-      ArrayList<ConfidenceCircleUser> confidenceCircle = new ArrayList<>(confidenceCircleUserList);
-      loggedUser.setConfidenceCircle(confidenceCircle);
+      ArrayList<ConfidenceCircleRequests> confidenceCircle = new ArrayList<>(confidenceCircleUserList);
+      loggedUser.setConfidenceRequest(confidenceCircle);
       userService.saveUser(loggedUser);
-      return ResponseEntity.ok(loggedUser.getConfidenceCircle());
+      return ResponseEntity.ok(loggedUser.getConfidenceRequest());
 
     }
 
@@ -77,10 +75,5 @@ public class ConfidenceCircleController {
 
   }
 
-  private boolean findUserRequest(List<ConfidenceCircleRequests> confidenceCircleRequests, String email) {
-
-    return confidenceCircleRequests.stream().anyMatch( (requestUser -> requestUser.getEmail().equals(email) ));
-
-  }
 
 }

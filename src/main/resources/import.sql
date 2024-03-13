@@ -1,3 +1,4 @@
+
 INSERT INTO role(name) values("ROLE_USER");
 INSERT INTO role(name) values("ROLE_WATCHMAN");
 INSERT INTO role(name) values("ROLE_ADMIN");
@@ -52,5 +53,4 @@ INSERT INTO confidence_circle (user_id, confidence_circle_id) VALUES (4, 5);
 INSERT INTO confidence_circle (user_id, confidence_circle_id) VALUES (4, 6);
 INSERT INTO confidence_circle (user_id, confidence_circle_id) VALUES (4, 7);
 INSERT INTO confidence_circle (user_id, confidence_circle_id) VALUES (5, 6);
-
 
