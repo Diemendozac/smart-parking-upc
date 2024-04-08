@@ -29,6 +29,7 @@ public class UserServiceImpl implements IUserService {
 
   @Override
   public List<UserEntity> findAll() {
+
     return null;
   }
 
@@ -61,12 +62,16 @@ public class UserServiceImpl implements IUserService {
   }
 
   @Override
-  public void saveUser(UserEntity user) {
+  public UserEntity saveUser(UserEntity user) {
     UserEntity savedUser = userRepository.save(user);
-    UserRole userRole = UserRole.builder().user(savedUser)
-            .role(roleService.findDefaultRole()).build();
-    userRoleRepository.save(userRole);
 
+    UserRole userRole = UserRole.builder()
+    .user(savedUser)
+    .role(roleService.findDefaultRole()).build();
+    UserRole roleSaved = userRoleRepository.save(userRole);
+
+
+    return savedUser ;
   }
 
   public Optional<UserEntity> findCurrentUser() {

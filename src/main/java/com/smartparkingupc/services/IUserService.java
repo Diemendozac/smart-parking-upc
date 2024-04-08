@@ -1,6 +1,5 @@
 package com.smartparkingupc.services;
 
-import com.smartparkingupc.controllers.dto.VehicleDTO;
 import com.smartparkingupc.entities.UserEntity;
 import com.smartparkingupc.http.response.UserEntityByWatchmanResponse;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,7 +15,7 @@ public interface IUserService {
   UserDetails loadUserByEmail(String email);
 
   Optional<UserEntity> findUserByEmail(String email);
-  void saveUser(UserEntity user);
+  UserEntity saveUser(UserEntity user);
   Optional<UserEntity> findCurrentUser();
 
   List<UserEntityByWatchmanResponse> getVehicleRelatedUsers(Long ownerId);

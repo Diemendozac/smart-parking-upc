@@ -17,6 +17,7 @@ public class RoleServiceImpl {
 	private RoleRepository roleReposirory;
 
 	public Role save(Role role) {
+
 		return roleReposirory.save(role);
 	}
 
