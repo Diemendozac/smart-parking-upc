@@ -1,4 +1,4 @@
-package com.smartparkingupc.services;
+package com.smartparkingupc.services.impl;
 
 import com.smartparkingupc.entities.Role;
 import com.smartparkingupc.repositories.RoleRepository;

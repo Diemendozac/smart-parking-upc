@@ -1,10 +1,11 @@
-package com.smartparkingupc.services;
+package com.smartparkingupc.services.impl;
 
 import com.smartparkingupc.controllers.dto.VehicleDTO;
 import com.smartparkingupc.entities.UserEntity;
 import com.smartparkingupc.entities.Vehicle;
 import com.smartparkingupc.repositories.UserRepository;
 import com.smartparkingupc.repositories.VehicleRepository;
+import com.smartparkingupc.services.IVehicleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
