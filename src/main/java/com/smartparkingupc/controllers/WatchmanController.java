@@ -53,11 +53,9 @@ public class WatchmanController {
     if (optionalUser.isEmpty()) return ResponseEntity.notFound().build();
     UserEntity user = optionalUser.get();
 
-    boolean isWatchmanSelectedUserPresentInConfidenceCircle = user.getConfidenceCircle()
-            .stream()
-            .anyMatch(confidenceCircleUser -> Objects.equals(confidenceCircleUser.getEmail(), watchmanSelectedUser));
-
-    if (! isWatchmanSelectedUserPresentInConfidenceCircle) return ResponseEntity.notFound().build();
+    if (!Objects.equals( user.getEmail(),watchmanSelectedUser)) {
+      if (!isPresentInConfidenceCircle(user, watchmanSelectedUser ) ) return ResponseEntity.badRequest().build();
+    }
 
     boolean setParkedStatus = !vehicle.isParked();
 
@@ -69,7 +67,7 @@ public class WatchmanController {
             .isGettingIn(setParkedStatus)
             .build();
     vehicle.setParked(setParkedStatus);
-    vehicleService.save(vehicle, vehicle.getOwnerId());
+    vehicleService.updateVehicle(vehicle);
     ticketService.saveTicket(ticket);
     return ResponseEntity.ok().build();
 
@@ -93,6 +91,13 @@ public class WatchmanController {
             .peek(vehicle -> vehicle.setParked(false)).toList();
     vehiclesToKick.forEach(vehicle -> vehicleService.save(vehicle, vehicle.getOwnerId()));
     return ResponseEntity.ok(vehicleService.findAll());
+
+  }
+
+  private Boolean isPresentInConfidenceCircle( UserEntity user, String watchmanSelectedUser ) {
+
+    return user.getConfidenceCircle().stream()
+            .anyMatch(confidenceCircleUser -> Objects.equals(confidenceCircleUser.getEmail(), watchmanSelectedUser));
 
   }
 
