@@ -1,7 +1,7 @@
 
-INSERT INTO role(name) values("ROLE_USER");
-INSERT INTO role(name) values("ROLE_WATCHMAN");
-INSERT INTO role(name) values("ROLE_ADMIN");
+INSERT INTO roles(name) values("ROLE_USER");
+INSERT INTO roles(name) values("ROLE_WATCHMAN");
+INSERT INTO roles(name) values("ROLE_ADMIN");
 
 INSERT INTO users (email, name, password, phone_number, photo_url) VALUES ('diegomedezdiaz@unicesar.edu.co', 'Diegomedez Díaz', 'asd1234', '3012345678', 'https://i.pravatar.com/150?img=1');
 

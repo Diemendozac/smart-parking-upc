@@ -7,7 +7,6 @@ import com.smartparkingupc.repositories.IUserRoleRepository;
 import com.smartparkingupc.repositories.UserRepository;
 import com.smartparkingupc.security.SecurityPrincipal;
 import com.smartparkingupc.services.IUserService;
-import com.smartparkingupc.services.impl.RoleServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

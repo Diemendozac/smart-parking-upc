@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+  mysql:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: test
+      MYSQL_DATABASE: test
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql  # Monta el script SQL como una entrada de inicialización
+
+  db-init:
+    image: mysql:latest
+    depends_on:
+      - mysql
+    volumes:
+      - ./init-db.sql:/init-db.sql  # Monta el script SQL que deseas ejecutar
+    command: ["sh", "-c", "sleep 10 && mysql -hmysql -utest -ptest test < /init-db.sql"]

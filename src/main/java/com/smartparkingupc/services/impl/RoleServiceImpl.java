@@ -14,22 +14,19 @@ import java.util.List;
 public class RoleServiceImpl {
 
 	@Autowired
-	private RoleRepository roleReposirory;
+	private RoleRepository roleRepository;
 
 	public Role save(Role role) {
-		return roleReposirory.save(role);
+		return roleRepository.save(role);
 	}
 
 	public List<Role> findAllRole() {
-		return (List<Role>) roleReposirory.findAll();
+		return (List<Role>) roleRepository.findAll();
 	}
 
 	public Role findDefaultRole() {
+		//List<Role> roleList = findAllRole();
 		return findAllRole().stream().findFirst().orElse(null);
-	}
-
-	public Role findRoleByName(String role) {
-		return findAllRole().stream().filter(r -> r.getName().equals(role)).findFirst().orElse(null);
 	}
 
 }

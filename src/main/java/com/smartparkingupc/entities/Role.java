@@ -9,7 +9,7 @@ import java.io.Serializable;
 
 
 @Entity
-@Table(name = "role")
+@Table(name = "roles")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
 public class Role implements Serializable{

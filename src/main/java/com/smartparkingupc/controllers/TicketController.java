@@ -16,12 +16,6 @@ public class TicketController {
 
   @Autowired
   private ITicketService ticketService;
-
-  @GetMapping
-  public String hello() {
-    return "Hello";
-  }
-
   @GetMapping("/find-all")
   public List<Ticket> findAllByUserOwnerEmail(@RequestAttribute("LoggedInUser") String email) {
     return ticketService.findUserRelatedTickets(email);

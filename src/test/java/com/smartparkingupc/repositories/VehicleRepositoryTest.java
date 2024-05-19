@@ -1,7 +1,6 @@
-
 package com.smartparkingupc.repositories;
 
-import com.smartparkingupc.entities.UserEntity;
+import com.smartparkingupc.entities.Vehicle;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,13 +12,14 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.testcontainers.containers.MySQLContainer;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
-public class UserRepositoryTest {
+public class VehicleRepositoryTest {
 
   static final MySQLContainer<?> mysqlContainer = new MySQLContainer<>("mysql:8.0.26")
           .withDatabaseName("testdb")
@@ -27,7 +27,7 @@ public class UserRepositoryTest {
           .withPassword("test");
 
   @Autowired
-  private UserRepository userRepository;
+  private VehicleRepository vehicleRepository;
 
   @BeforeAll
   static void startContainer() {
@@ -44,23 +44,38 @@ public class UserRepositoryTest {
 
   @BeforeEach
   void setUp() {
-    UserEntity userEntity = new UserEntity();
-    userEntity.setEmail("test@example.com");
-    userEntity.setPassword("password");
-    userRepository.save(userEntity);
+    Vehicle vehicle = new Vehicle();
+    vehicle.setOwnerId(1L);
+    vehicle.setPlate("ABC123");
+    vehicle.setParked(true);
+    vehicleRepository.save(vehicle);
   }
 
   @Test
-  void testFindByEmail_UserExists() {
-    Optional<UserEntity> foundUser = userRepository.findByEmail("test@example.com");
-    assertTrue(foundUser.isPresent());
-    assertEquals("test@example.com", foundUser.get().getEmail());
+  void testFindAllByOwnerId() {
+    List<Vehicle> vehicles = vehicleRepository.findAllByOwnerId(1L);
+    assertFalse(vehicles.isEmpty());
+    assertEquals(1L, vehicles.get(0).getOwnerId());
   }
 
   @Test
-  void testFindByEmail_UserDoesNotExist() {
-    Optional<UserEntity> foundUser = userRepository.findByEmail("notfound@example.com");
-    assertFalse(foundUser.isPresent());
+  void testFindByPlate() {
+    Optional<Vehicle> vehicle = vehicleRepository.findByPlate("ABC123");
+    assertTrue(vehicle.isPresent());
+    assertEquals("ABC123", vehicle.get().getPlate());
   }
 
+  @Test
+  void testFindAllParkedVehicles() {
+    List<Vehicle> parkedVehicles = vehicleRepository.findAllParkedVehicles();
+    assertFalse(parkedVehicles.isEmpty());
+    assertTrue(parkedVehicles.get(0).isParked());
+  }
+
+  @Test
+  void testDeleteVehicleByPlate() {
+    vehicleRepository.deleteVehicleByPlate("ABC123");
+    Optional<Vehicle> vehicle = vehicleRepository.findByPlate("ABC123");
+    assertFalse(vehicle.isPresent());
+  }
 }

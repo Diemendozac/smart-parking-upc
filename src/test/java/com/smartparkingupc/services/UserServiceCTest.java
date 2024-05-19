@@ -1,13 +1,13 @@
-
-package com.smartparkingupc.repositories;
+package com.smartparkingupc.services;
 
 import com.smartparkingupc.entities.UserEntity;
+import com.smartparkingupc.repositories.UserRepository;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -18,13 +18,16 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
-@DataJpaTest
-public class UserRepositoryTest {
+@SpringBootTest
+public class UserServiceCTest {
 
   static final MySQLContainer<?> mysqlContainer = new MySQLContainer<>("mysql:8.0.26")
           .withDatabaseName("testdb")
           .withUsername("test")
           .withPassword("test");
+
+  @Autowired
+  private IUserService userService;
 
   @Autowired
   private UserRepository userRepository;
@@ -44,23 +47,40 @@ public class UserRepositoryTest {
 
   @BeforeEach
   void setUp() {
-    UserEntity userEntity = new UserEntity();
-    userEntity.setEmail("test@example.com");
-    userEntity.setPassword("password");
-    userRepository.save(userEntity);
+    UserEntity user = new UserEntity();
+    user.setEmail("test@example.com");
+    user.setPassword("password");
+    user.setName("test");
+    userRepository.save(user);
   }
 
   @Test
-  void testFindByEmail_UserExists() {
-    Optional<UserEntity> foundUser = userRepository.findByEmail("test@example.com");
-    assertTrue(foundUser.isPresent());
-    assertEquals("test@example.com", foundUser.get().getEmail());
+  void testFindUserByEmail() {
+    Optional<UserEntity> user = userService.findUserByEmail("test@example.com");
+    assertTrue(user.isPresent());
+    assertEquals("test@example.com", user.get().getEmail());
   }
 
   @Test
-  void testFindByEmail_UserDoesNotExist() {
-    Optional<UserEntity> foundUser = userRepository.findByEmail("notfound@example.com");
-    assertFalse(foundUser.isPresent());
+  void testSaveUser() {
+    UserEntity newUser = new UserEntity();
+    newUser.setEmail("newuser@example.com");
+    newUser.setPassword("newpassword");
+    userService.saveUser(newUser);
+
+    Optional<UserEntity> savedUser = userRepository.findByEmail("newuser@example.com");
+    assertTrue(savedUser.isPresent());
+    assertEquals("newuser@example.com", savedUser.get().getEmail());
   }
 
+  @Test
+  void testFindUserByEmail_UserDoesNotExist() {
+    String email = "notfound@example.com";
+
+    // Llamar al método bajo prueba
+    Optional<UserEntity> optUser = userService.findUserByEmail(email);
+
+    // Verificacion
+    assertEquals(optUser, Optional.empty());
+  }
 }
