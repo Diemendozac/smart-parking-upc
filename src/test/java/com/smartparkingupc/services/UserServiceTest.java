@@ -15,7 +15,6 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,17 +24,13 @@ import static org.mockito.Mockito.*;
 
 public class UserServiceTest {
 
-  @Mock
-  private UserRepository userRepository;
+  @Mock private UserRepository userRepository;
 
-  @Mock
-  private RoleServiceImpl roleService;
+  @Mock private RoleServiceImpl roleService;
 
-  @Mock
-  private IUserRoleRepository userRoleRepository;
+  @Mock private IUserRoleRepository userRoleRepository;
 
-  @InjectMocks
-  private UserServiceImpl userService;
+  @InjectMocks private UserServiceImpl userService;
 
   @BeforeEach
   void setUp() {
@@ -52,10 +47,7 @@ public class UserServiceTest {
     Role defaultRole = new Role();
     defaultRole.setName("ROLE_USER");
 
-    UserRole userRole = UserRole.builder()
-            .user(userEntity)
-            .role(defaultRole)
-            .build();
+    UserRole userRole = UserRole.builder().user(userEntity).role(defaultRole).build();
 
     // Configurar mocks
     when(userRepository.save(any(UserEntity.class))).thenReturn(userEntity);
@@ -85,12 +77,13 @@ public class UserServiceTest {
     UserRole userRole = new UserRole();
     userRole.setUser(userEntity);
     userRole.setRole(role);
-    Collection<UserRole> userRoles = new ArrayList<>();
+    List<UserRole> userRoles = new ArrayList<>();
     userRoles.add(userRole);
 
     // Configurar mocks
     when(userRepository.findByEmail(email)).thenReturn(Optional.of(userEntity));
-    when(userRoleRepository.findAllByUserId(userEntity.getId())).thenReturn((List<UserRole>) userRoles);
+    when(userRoleRepository.findAllByUserId(userEntity.getId()))
+        .thenReturn(userRoles);
 
     // Llamar al método bajo prueba
     UserDetails userDetails = userService.loadUserByEmail(email);
@@ -99,7 +92,8 @@ public class UserServiceTest {
     assertNotNull(userDetails);
     assertEquals(userEntity.getEmail(), userDetails.getUsername());
     assertEquals(userEntity.getPassword(), userDetails.getPassword());
-    assertTrue(userDetails.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_USER")));
+    assertTrue(
+        userDetails.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_USER")));
 
     // Verificar que los métodos del mock fueron llamados
     verify(userRepository, times(1)).findByEmail(email);

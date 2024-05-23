@@ -22,16 +22,11 @@ import jakarta.transaction.Transactional;
 @Service
 @Transactional
 public class CustomUserDetailsService implements UserDetailsService {
-  //private static final Logger LOG = LoggerFactory.getLogger(WUserService.class);
+  // private static final Logger LOG = LoggerFactory.getLogger(WUserService.class);
 
-  @Autowired
-  private UserRepository userRepository;
+  @Autowired private UserRepository userRepository;
 
-  @Autowired
-  private IUserRoleRepository userRoleRepository;
-
-  @Autowired
-  private IUserRoleRepository roleService;
+  @Autowired private IUserRoleRepository userRoleRepository;
 
   @Override
   public UserDetails loadUserByUsername(String email) {
@@ -42,28 +37,12 @@ public class CustomUserDetailsService implements UserDetailsService {
 
       Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
 
-      userRoles.forEach(userRole -> authorities.add(new SimpleGrantedAuthority(userRole.getRole().getName())));
+      userRoles.forEach(
+          userRole -> authorities.add(new SimpleGrantedAuthority(userRole.getRole().getName())));
 
-      return new org.springframework.security.core.userdetails.User(user.getEmail(),
-              user.getPassword(), authorities);
-
+      return new org.springframework.security.core.userdetails.User(
+          user.getEmail(), user.getPassword(), authorities);
     }
     return null;
   }
-
-  public Optional<UserEntity> findByUsername(String username) {
-    return userRepository.findByEmail(username);
-  }
-
-  public UserEntity findCurrentUser() {
-    return userRepository.findById(SecurityPrincipal.getInstance().getLoggedInPrincipal().getId()).get();
-
-  }
-
-  public List<UserRole> findAllCurrentUserRole() {
-    return userRoleRepository.findAllByUserId(SecurityPrincipal.getInstance().getLoggedInPrincipal().getId());
-
-  }
-
-
 }

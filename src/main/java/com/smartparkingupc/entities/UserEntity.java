@@ -1,6 +1,5 @@
 package com.smartparkingupc.entities;
 
-
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,6 +22,7 @@ public class UserEntity implements UserDetails {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
+
   private String email;
   private String password;
   private String name;
@@ -30,33 +30,32 @@ public class UserEntity implements UserDetails {
   private String photoUrl;
 
   @ManyToMany(cascade = CascadeType.ALL)
-  @JoinTable(name="confidence_circle",
-          joinColumns=@JoinColumn(name="user_id"),
-          inverseJoinColumns=@JoinColumn(name="confidence_circle_id")
-  )
+  @JoinTable(
+      name = "confidence_circle",
+      joinColumns = @JoinColumn(name = "user_id"),
+      inverseJoinColumns = @JoinColumn(name = "confidence_circle_id"))
   private List<ConfidenceCircleUser> confidenceCircle;
 
   @ManyToMany
-  @JoinTable(name="confidence_circle",
-          joinColumns=@JoinColumn(name="confidence_circle_id"),
-          inverseJoinColumns=@JoinColumn(name="user_id")
-  )
+  @JoinTable(
+      name = "confidence_circle",
+      joinColumns = @JoinColumn(name = "confidence_circle_id"),
+      inverseJoinColumns = @JoinColumn(name = "user_id"))
   private List<ConfidenceCircleUser> confidenceCircleOf;
 
   @ManyToMany(cascade = CascadeType.ALL)
-  @JoinTable(name="confidence_requests",
-          joinColumns=@JoinColumn(name="user_id"),
-          inverseJoinColumns=@JoinColumn(name="confidence_requests_id")
-  )
+  @JoinTable(
+      name = "confidence_requests",
+      joinColumns = @JoinColumn(name = "user_id"),
+      inverseJoinColumns = @JoinColumn(name = "confidence_requests_id"))
   private List<ConfidenceCircleRequests> confidenceRequest;
 
   @ManyToMany
-  @JoinTable(name="confidence_requests",
-          joinColumns=@JoinColumn(name="confidence_requests_id"),
-          inverseJoinColumns=@JoinColumn(name="user_id")
-  )
+  @JoinTable(
+      name = "confidence_requests",
+      joinColumns = @JoinColumn(name = "confidence_requests_id"),
+      inverseJoinColumns = @JoinColumn(name = "user_id"))
   private List<ConfidenceCircleRequests> confidenceRequestOf;
-
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {

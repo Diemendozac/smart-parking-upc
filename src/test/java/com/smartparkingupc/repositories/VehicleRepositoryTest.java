@@ -21,13 +21,13 @@ import static org.junit.jupiter.api.Assertions.*;
 @DataJpaTest
 public class VehicleRepositoryTest {
 
-  static final MySQLContainer<?> mysqlContainer = new MySQLContainer<>("mysql:8.0.26")
+  static final MySQLContainer<?> mysqlContainer =
+      new MySQLContainer<>("mysql:8.0.26")
           .withDatabaseName("testdb")
           .withUsername("test")
           .withPassword("test");
 
-  @Autowired
-  private VehicleRepository vehicleRepository;
+  @Autowired private VehicleRepository vehicleRepository;
 
   @BeforeAll
   static void startContainer() {

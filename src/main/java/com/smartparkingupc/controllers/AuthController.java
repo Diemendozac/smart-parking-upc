@@ -20,28 +20,27 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class AuthController {
 
-  @Autowired
-  private IUserService userService;
-  @Autowired
-  private AuthenticationManager authenticationManager;
-  @Autowired
-  private JWTTokenUtil jwtTokenUtil;
+  @Autowired private IUserService userService;
+  @Autowired private AuthenticationManager authenticationManager;
+  @Autowired private JWTTokenUtil jwtTokenUtil;
 
   @PostMapping("/authenticate")
-  public ResponseEntity<Object> createAuthenticationToken(@RequestBody UserCredential userCredential) {
+  public ResponseEntity<Object> createAuthenticationToken(
+      @RequestBody UserCredential userCredential) {
 
     try {
       authenticate(userCredential.getEmail(), userCredential.getPassword());
     } catch (Exception e) {
-      return EntityResponse.generateResponse("Authentication", HttpStatus.UNAUTHORIZED,
-              "Invalid credentials, please check details and try again.");
+      return EntityResponse.generateResponse(
+          "Authentication",
+          HttpStatus.UNAUTHORIZED,
+          "Invalid credentials, please check details and try again.");
     }
     final UserDetails userDetails = userService.loadUserByEmail(userCredential.getEmail());
 
     final String token = jwtTokenUtil.generateToken(userDetails);
 
     return ResponseEntity.ok(new AuthenticationResponse(token));
-
   }
 
   private void authenticate(String email, String password) throws Exception {
@@ -51,9 +50,8 @@ public class AuthController {
       throw new Exception("USER_DISABLED", e);
     } catch (BadCredentialsException e) {
       throw new Exception("INVALID_CREDENTIALS", e);
-    }catch(Exception e) {
+    } catch (Exception e) {
       throw new Exception("INVALID_CREDENTIALS", e.getCause());
-
     }
   }
 }

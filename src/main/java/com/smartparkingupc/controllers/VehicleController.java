@@ -1,6 +1,5 @@
 package com.smartparkingupc.controllers;
 
-
 import com.smartparkingupc.controllers.dto.VehicleDTO;
 import com.smartparkingupc.entities.Vehicle;
 import com.smartparkingupc.http.response.EntityResponse;
@@ -17,8 +16,7 @@ import java.util.Optional;
 @RequestMapping("/vehicle")
 public class VehicleController {
 
-  @Autowired
-  private IVehicleService vehicleService;
+  @Autowired private IVehicleService vehicleService;
 
   @GetMapping("/all")
   public ResponseEntity<?> getVehicles() {
@@ -36,19 +34,21 @@ public class VehicleController {
     return ResponseEntity.noContent().build();
   }
 
-
   @PostMapping("/save")
-  public ResponseEntity<?> saveVehicle(@RequestAttribute("LoggedInUser") String email, @RequestBody VehicleDTO vehicleDTO) {
+  public ResponseEntity<?> saveVehicle(
+      @RequestAttribute("LoggedInUser") String email, @RequestBody VehicleDTO vehicleDTO) {
 
     Long requestId = vehicleService.findOwnerRequestIdByUserEmail(email);
-    if (requestId == -1) return EntityResponse.generateResponse(
-            ResponseConstants.ISSUE_WHILE_SAVING_VEHICLE, HttpStatus.NOT_FOUND, "Not found"
-    );
+    if (requestId == -1)
+      return EntityResponse.generateResponse(
+          ResponseConstants.ISSUE_WHILE_SAVING_VEHICLE, HttpStatus.NOT_FOUND, "Not found");
 
     Optional<Vehicle> optRequestVehicle = vehicleService.findVehicleByPlate(vehicleDTO.getPlate());
-    if ( optRequestVehicle.isPresent()) return new ResponseEntity<>("El vehículo ya existe", HttpStatus.UNAUTHORIZED);
+    if (optRequestVehicle.isPresent())
+      return new ResponseEntity<>("El vehículo ya existe", HttpStatus.UNAUTHORIZED);
 
-    Vehicle vehicle = Vehicle.builder()
+    Vehicle vehicle =
+        Vehicle.builder()
             .plate(vehicleDTO.getPlate().toUpperCase())
             .model(vehicleDTO.getModel())
             .line(vehicleDTO.getLine())
@@ -61,15 +61,19 @@ public class VehicleController {
   }
 
   @PutMapping("/update")
-  public ResponseEntity<?> updateVehicle(@RequestAttribute("LoggedInUser") String email, @RequestBody VehicleDTO vehicleDTO) {
+  public ResponseEntity<?> updateVehicle(
+      @RequestAttribute("LoggedInUser") String email, @RequestBody VehicleDTO vehicleDTO) {
 
-    Optional<Vehicle> optVehicle = vehicleService.findVehicleByPlate(vehicleDTO.getPlate().toUpperCase());
+    Optional<Vehicle> optVehicle =
+        vehicleService.findVehicleByPlate(vehicleDTO.getPlate().toUpperCase());
     Long requestId = vehicleService.findOwnerRequestIdByUserEmail(email);
     if (optVehicle.isEmpty()) return ResponseEntity.noContent().build();
     if (requestId == -1) return ResponseEntity.internalServerError().build();
     Vehicle vehicle = optVehicle.get();
-    if (!requestId.equals(vehicle.getOwnerId())) return new ResponseEntity<>("No eres el dueño del vehículo", HttpStatus.UNAUTHORIZED);
-    Vehicle updatedVehicle = Vehicle.builder()
+    if (!requestId.equals(vehicle.getOwnerId()))
+      return new ResponseEntity<>("No eres el dueño del vehículo", HttpStatus.UNAUTHORIZED);
+    Vehicle updatedVehicle =
+        Vehicle.builder()
             .id(vehicle.getId())
             .plate(vehicle.getPlate())
             .brand(vehicleDTO.getBrand())
@@ -84,7 +88,8 @@ public class VehicleController {
   }
 
   @DeleteMapping("/delete")
-  public ResponseEntity<?> deleteVehicle(@RequestAttribute("LoggedInUser") String email, @RequestParam String vehiclePlate) {
+  public ResponseEntity<?> deleteVehicle(
+      @RequestAttribute("LoggedInUser") String email, @RequestParam String vehiclePlate) {
 
     Optional<Vehicle> optVehicle = vehicleService.findVehicleByPlate(vehiclePlate);
     Long requestId = vehicleService.findOwnerRequestIdByUserEmail(email);
@@ -95,7 +100,5 @@ public class VehicleController {
       return ResponseEntity.ok(vehicleService.findAssociatedVehicles(requestId));
     }
     return new ResponseEntity<>("Unauthorized", HttpStatus.UNAUTHORIZED);
-
   }
-
 }

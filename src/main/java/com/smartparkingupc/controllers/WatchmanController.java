@@ -20,13 +20,9 @@ import java.util.Optional;
 @RequestMapping("/watchman")
 public class WatchmanController {
 
-  @Autowired
-  private IUserService userService;
-  @Autowired
-  private IVehicleService vehicleService;
-  @Autowired
-  private ITicketService ticketService;
-
+  @Autowired private IUserService userService;
+  @Autowired private IVehicleService vehicleService;
+  @Autowired private ITicketService ticketService;
 
   @GetMapping("/related-users")
   public ResponseEntity<?> findAllVehicleRelatedUsersByPlate(@RequestParam String plate) {
@@ -34,9 +30,9 @@ public class WatchmanController {
     Optional<Vehicle> optVehicle = vehicleService.findVehicleByPlate(plate);
     if (optVehicle.isEmpty()) return ResponseEntity.noContent().build();
     Long ownerId = optVehicle.get().getOwnerId();
-    List<UserEntityByWatchmanResponse> vehicleRelatedUsers = userService.getVehicleRelatedUsers(ownerId);
+    List<UserEntityByWatchmanResponse> vehicleRelatedUsers =
+        userService.getVehicleRelatedUsers(ownerId);
     return ResponseEntity.ok(vehicleRelatedUsers);
-
   }
 
   @GetMapping("/parked-vehicles")
@@ -45,7 +41,8 @@ public class WatchmanController {
   }
 
   @PatchMapping("/switch-state")
-  public ResponseEntity<?> switchParkingStateByPlate(@RequestParam String plate, @RequestParam String watchmanSelectedUser) {
+  public ResponseEntity<?> switchParkingStateByPlate(
+      @RequestParam String plate, @RequestParam String watchmanSelectedUser) {
     Optional<Vehicle> optVehicle = vehicleService.findVehicleByPlate(plate);
     if (optVehicle.isEmpty()) return ResponseEntity.notFound().build();
     Vehicle vehicle = optVehicle.get();
@@ -53,15 +50,18 @@ public class WatchmanController {
     if (optionalUser.isEmpty()) return ResponseEntity.notFound().build();
     UserEntity user = optionalUser.get();
 
-    boolean isWatchmanSelectedUserPresentInConfidenceCircle = user.getConfidenceCircle()
-            .stream()
-            .anyMatch(confidenceCircleUser -> Objects.equals(confidenceCircleUser.getEmail(), watchmanSelectedUser));
+    boolean isWatchmanSelectedUserPresentInConfidenceCircle =
+        user.getConfidenceCircle().stream()
+            .anyMatch(
+                confidenceCircleUser ->
+                    Objects.equals(confidenceCircleUser.getEmail(), watchmanSelectedUser));
 
-    if (! isWatchmanSelectedUserPresentInConfidenceCircle) return ResponseEntity.notFound().build();
+    if (!isWatchmanSelectedUserPresentInConfidenceCircle) return ResponseEntity.notFound().build();
 
     boolean setParkedStatus = !vehicle.isParked();
 
-    Ticket ticket = Ticket.builder()
+    Ticket ticket =
+        Ticket.builder()
             .vehiclePlate(vehicle.getPlate())
             .watchmanSelectedUser(watchmanSelectedUser)
             .userOwnerEmail(user.getEmail())
@@ -72,7 +72,6 @@ public class WatchmanController {
     vehicleService.save(vehicle, vehicle.getOwnerId());
     ticketService.saveTicket(ticket);
     return ResponseEntity.ok().build();
-
   }
 
   @GetMapping("/kick")
@@ -82,19 +81,17 @@ public class WatchmanController {
     Vehicle vehicle = optVehicle.get();
     vehicle.setParked(false);
     return ResponseEntity.ok(vehicleService.findAllParkedVehicles());
-
   }
 
   @GetMapping("/kick-all")
   public ResponseEntity<?> kickAllParkedVehicle() {
     List<Vehicle> allVehicles = vehicleService.findAll();
-    List<Vehicle> vehiclesToKick = allVehicles.stream()
+    List<Vehicle> vehiclesToKick =
+        allVehicles.stream()
             .filter(Vehicle::isParked)
-            .peek(vehicle -> vehicle.setParked(false)).toList();
+            .peek(vehicle -> vehicle.setParked(false))
+            .toList();
     vehiclesToKick.forEach(vehicle -> vehicleService.save(vehicle, vehicle.getOwnerId()));
     return ResponseEntity.ok(vehicleService.findAll());
-
   }
-
-
 }

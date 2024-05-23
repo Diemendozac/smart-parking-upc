@@ -23,42 +23,49 @@ import java.util.Optional;
 @RequestMapping("/user")
 public class UserController {
 
-  @Autowired
-  private IUserService userService;
+  @Autowired private IUserService userService;
 
-  @Autowired
-  private IVehicleService vehicleService;
+  @Autowired private IVehicleService vehicleService;
 
-  @Autowired
-  PasswordEncoder passwordEncoder;
+  @Autowired PasswordEncoder passwordEncoder;
 
   @PostMapping("/register")
   public ResponseEntity<?> registerUser(@RequestBody UserEntity user) {
     if (EmailValidator.isValid(user.getEmail())) {
 
-      if (userService.findUserByEmail(user.getEmail()).isPresent()) return ResponseEntity.badRequest().build();
+      if (userService.findUserByEmail(user.getEmail()).isPresent())
+        return ResponseEntity.badRequest().build();
 
       user.setPassword(passwordEncoder.encode(user.getPassword()));
       userService.saveUser(user);
-      return EntityResponse.generateResponse(ResponseConstants.CREATED_USER_MESSAGE,
-              HttpStatus.CREATED, "Created User");
-
+      return EntityResponse.generateResponse(
+          ResponseConstants.CREATED_USER_MESSAGE, HttpStatus.CREATED, "Created User");
     }
-    return EntityResponse.generateResponse(ResponseConstants.ISSUE_WHILE_CREATING_MESSAGE,
-            HttpStatus.BAD_REQUEST, "Invalid Request");
+    return EntityResponse.generateResponse(
+        ResponseConstants.ISSUE_WHILE_CREATING_MESSAGE, HttpStatus.BAD_REQUEST, "Invalid Request");
   }
 
   @GetMapping("/vehicles")
-  public ResponseEntity<Object> findAllUserAssociatedVehicles(@RequestAttribute String LoggedInUser) {
+  public ResponseEntity<Object> findAllUserAssociatedVehicles(
+      @RequestAttribute String LoggedInUser) {
 
     Optional<UserEntity> optionalUser = userService.findUserByEmail(LoggedInUser);
-    return optionalUser.<ResponseEntity<Object>>map(userEntity -> ResponseEntity.ok(vehicleService.findAssociatedVehicles(userEntity.getId())))
-            .orElseGet(() -> EntityResponse.generateResponse(ResponseConstants.ISSUE_WHILE_FINDING_VEHICLES, HttpStatus.NO_CONTENT, "Error while finding"));
+    return optionalUser
+        .<ResponseEntity<Object>>map(
+            userEntity ->
+                ResponseEntity.ok(vehicleService.findAssociatedVehicles(userEntity.getId())))
+        .orElseGet(
+            () ->
+                EntityResponse.generateResponse(
+                    ResponseConstants.ISSUE_WHILE_FINDING_VEHICLES,
+                    HttpStatus.NO_CONTENT,
+                    "Error while finding"));
   }
 
   @GetMapping("/profile")
   public ResponseEntity<Object> retrieveUserProfile() {
-    return EntityResponse.generateResponse("User Profile", HttpStatus.OK, userService.findCurrentUser().get());
+    return EntityResponse.generateResponse(
+        "User Profile", HttpStatus.OK, userService.findCurrentUser().get());
   }
 
   @GetMapping("/login")
@@ -70,21 +77,28 @@ public class UserController {
       UserEntity user = optionalUser.get();
       List<VehicleDTO> vehicles = vehicleService.findAssociatedVehicles(user.getId());
 
-      List<ConfidenceCircleDTO> confidenceCircleDTOS = user.getConfidenceCircle()
-              .stream().map(confidenceCircleUser -> ConfidenceCircleDTO
-                      .builder().email(confidenceCircleUser.getEmail())
-                      .name(confidenceCircleUser.getName())
-                      .build()
-              ).toList();
+      List<ConfidenceCircleDTO> confidenceCircleDTOS =
+          user.getConfidenceCircle().stream()
+              .map(
+                  confidenceCircleUser ->
+                      ConfidenceCircleDTO.builder()
+                          .email(confidenceCircleUser.getEmail())
+                          .name(confidenceCircleUser.getName())
+                          .build())
+              .toList();
 
-      List<ConfidenceCircleRequests> confidenceRequestDTOS = user.getConfidenceRequest()
-              .stream().map(confidenceCircleUser -> ConfidenceCircleRequests
-                      .builder().email(confidenceCircleUser.getEmail())
-                      .name(confidenceCircleUser.getName())
-                      .build()
-              ).toList();
+      List<ConfidenceCircleRequests> confidenceRequestDTOS =
+          user.getConfidenceRequest().stream()
+              .map(
+                  confidenceCircleUser ->
+                      ConfidenceCircleRequests.builder()
+                          .email(confidenceCircleUser.getEmail())
+                          .name(confidenceCircleUser.getName())
+                          .build())
+              .toList();
 
-      UserDTO userDTO = UserDTO.builder()
+      UserDTO userDTO =
+          UserDTO.builder()
               .email(user.getEmail())
               .name(user.getName())
               .phoneNumber(user.getPhoneNumber())
@@ -94,11 +108,9 @@ public class UserController {
               .build();
 
       return ResponseEntity.ok(userDTO);
-
     }
 
-    return EntityResponse.generateResponse(ResponseConstants.ISSUE_WHILE_FINDING_USER, HttpStatus.NO_CONTENT, "Not found");
-
+    return EntityResponse.generateResponse(
+        ResponseConstants.ISSUE_WHILE_FINDING_USER, HttpStatus.NO_CONTENT, "Not found");
   }
-
 }

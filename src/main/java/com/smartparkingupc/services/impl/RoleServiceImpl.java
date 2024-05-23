@@ -13,20 +13,18 @@ import java.util.List;
 @Transactional
 public class RoleServiceImpl {
 
-	@Autowired
-	private RoleRepository roleRepository;
+  @Autowired private RoleRepository roleRepository;
 
-	public Role save(Role role) {
-		return roleRepository.save(role);
-	}
+  public Role save(Role role) {
+    return roleRepository.save(role);
+  }
 
-	public List<Role> findAllRole() {
-		return (List<Role>) roleRepository.findAll();
-	}
+  public List<Role> findAllRole() {
+    return (List<Role>) roleRepository.findAll();
+  }
 
-	public Role findDefaultRole() {
-		//List<Role> roleList = findAllRole();
-		return findAllRole().stream().findFirst().orElse(null);
-	}
-
+  public Role findDefaultRole() {
+    // List<Role> roleList = findAllRole();
+    return findAllRole().stream().findFirst().orElse(null);
+  }
 }

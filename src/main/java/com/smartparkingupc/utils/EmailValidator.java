@@ -9,5 +9,4 @@ public class EmailValidator {
   public static boolean isValid(String domain) {
     return PATTERN.matcher(domain).matches();
   }
-
 }

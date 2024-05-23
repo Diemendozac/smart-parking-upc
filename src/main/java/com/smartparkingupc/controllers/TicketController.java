@@ -14,12 +14,10 @@ import java.util.List;
 @RequestMapping("/ticket")
 public class TicketController {
 
-  @Autowired
-  private ITicketService ticketService;
+  @Autowired private ITicketService ticketService;
+
   @GetMapping("/find-all")
   public List<Ticket> findAllByUserOwnerEmail(@RequestAttribute("LoggedInUser") String email) {
     return ticketService.findUserRelatedTickets(email);
-
   }
-
 }

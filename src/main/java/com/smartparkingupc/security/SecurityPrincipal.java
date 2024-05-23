@@ -1,6 +1,4 @@
-/**
- * 
- */
+/** */
 package com.smartparkingupc.security;
 
 import com.smartparkingupc.entities.UserEntity;
@@ -17,32 +15,31 @@ import java.util.Optional;
 @Service
 public class SecurityPrincipal {
 
-	private final Authentication principal = SecurityContextHolder.getContext().getAuthentication();
+  private final Authentication principal = SecurityContextHolder.getContext().getAuthentication();
 
-	private static IUserService userService;
+  private static IUserService userService;
 
-	@Autowired
-	private SecurityPrincipal(IUserService userService) {
-		this.userService = userService;
-	}
+  @Autowired
+  private SecurityPrincipal(IUserService userService) {
+    SecurityPrincipal.userService = userService;
+  }
 
-	public static SecurityPrincipal getInstance() {
-		return new SecurityPrincipal(userService);
-	}
+  public static SecurityPrincipal getInstance() {
+    return new SecurityPrincipal(userService);
+  }
 
-	public UserEntity getLoggedInPrincipal() {
-		if (principal != null) {
-			UserDetails loggedInPrincipal = (UserDetails) principal.getPrincipal();
-			Optional<UserEntity> optUser = userService.findUserByEmail(loggedInPrincipal.getUsername());
-			if (optUser.isPresent()) {
-				return optUser.get();
-			}
-		}
-		return null;
-	}
+  public UserEntity getLoggedInPrincipal() {
+    if (principal != null) {
+      UserDetails loggedInPrincipal = (UserDetails) principal.getPrincipal();
+      Optional<UserEntity> optUser = userService.findUserByEmail(loggedInPrincipal.getUsername());
+      if (optUser.isPresent()) {
+        return optUser.get();
+      }
+    }
+    return null;
+  }
 
-	public Collection<?> getLoggedInPrincipalAuthorities() {
-		return ((UserDetails) principal.getPrincipal()).getAuthorities();
-	}
-
+  public Collection<?> getLoggedInPrincipalAuthorities() {
+    return ((UserDetails) principal.getPrincipal()).getAuthorities();
+  }
 }

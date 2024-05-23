@@ -16,8 +16,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ConfidenceCircleRequests {
 
-  @Id
-  private Long id;
+  @Id private Long id;
   private String email;
   private String name;
 }

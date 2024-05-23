@@ -21,16 +21,15 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 public class UserServiceCTest {
 
-  static final MySQLContainer<?> mysqlContainer = new MySQLContainer<>("mysql:8.0.26")
+  static final MySQLContainer<?> mysqlContainer =
+      new MySQLContainer<>("mysql:8.0.26")
           .withDatabaseName("testdb")
           .withUsername("test")
           .withPassword("test");
 
-  @Autowired
-  private IUserService userService;
+  @Autowired private IUserService userService;
 
-  @Autowired
-  private UserRepository userRepository;
+  @Autowired private UserRepository userRepository;
 
   @BeforeAll
   static void startContainer() {

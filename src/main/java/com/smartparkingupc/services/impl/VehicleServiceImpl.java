@@ -12,14 +12,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
-
 @Service
 public class VehicleServiceImpl implements IVehicleService {
 
-  @Autowired
-  private VehicleRepository vehicleRepository;
-  @Autowired
-  private UserRepository userRepository;
+  @Autowired private VehicleRepository vehicleRepository;
+  @Autowired private UserRepository userRepository;
 
   @Override
   public List<Vehicle> findAll() {
@@ -31,11 +28,10 @@ public class VehicleServiceImpl implements IVehicleService {
     return vehicleRepository.findByPlate(plate);
   }
 
-
   @Override
   public void save(Vehicle vehicle, Long ownerId) {
 
-    if( vehicleRepository.findAllByOwnerId(ownerId).size() > 2) return;
+    if (vehicleRepository.findAllByOwnerId(ownerId).size() > 2) return;
     vehicleRepository.save(vehicle);
   }
 
@@ -59,14 +55,16 @@ public class VehicleServiceImpl implements IVehicleService {
 
   @Override
   public List<VehicleDTO> findAllParkedVehicles() {
-    return vehicleRepository.findAllParkedVehicles()
-            .stream().map(vehicle -> VehicleDTO.builder()
+    return vehicleRepository.findAllParkedVehicles().stream()
+        .map(
+            vehicle ->
+                VehicleDTO.builder()
                     .plate(vehicle.getPlate())
                     .brand(vehicle.getBrand())
                     .model(vehicle.getModel())
                     .line(vehicle.getLine())
-                    .build()
-            ).toList();
+                    .build())
+        .toList();
   }
 
   @Override
@@ -74,28 +72,28 @@ public class VehicleServiceImpl implements IVehicleService {
 
     ArrayList<Long> associatedIds = new ArrayList<>();
     Optional<UserEntity> optUser = userRepository.findById(requestId);
-    if ( optUser.isEmpty() ) return null;
+    if (optUser.isEmpty()) return null;
     UserEntity user = optUser.get();
     associatedIds.add(requestId);
-    user.getConfidenceCircle().forEach((confidenceCircleUser -> associatedIds.add(confidenceCircleUser.getId())));
+    user.getConfidenceCircle()
+        .forEach((confidenceCircleUser -> associatedIds.add(confidenceCircleUser.getId())));
 
-    List<Vehicle> relatedVehicles = associatedIds.stream()
+    List<Vehicle> relatedVehicles =
+        associatedIds.stream()
             .map(id -> vehicleRepository.findAllByOwnerId(id))
             .flatMap(Collection::stream)
             .toList();
-    return relatedVehicles.stream().map((vehicle -> VehicleDTO.builder()
+    return relatedVehicles.stream()
+        .map(
+            (vehicle ->
+                VehicleDTO.builder()
                     .plate(vehicle.getPlate())
                     .brand(vehicle.getBrand())
                     .model(vehicle.getModel())
                     .line(vehicle.getLine())
-                    //.color(vehicle.getColor())
+                    // .color(vehicle.getColor())
                     .isOwner(Objects.equals(vehicle.getOwnerId(), associatedIds.get(0)))
-                    .build()
-            )
-    ).toList();
-
+                    .build()))
+        .toList();
   }
-
-
 }
-

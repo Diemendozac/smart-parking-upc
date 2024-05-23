@@ -19,16 +19,17 @@ import java.util.Optional;
 @RequestMapping("/confidence-circle")
 public class ConfidenceCircleController {
 
-  @Autowired
-  private IUserService userService;
+  @Autowired private IUserService userService;
 
   @PostMapping("/add")
-  public ResponseEntity<?> saveUserConfidenceCircle(@RequestParam String email, @RequestAttribute("LoggedInUser") String loggedUserEmail) {
+  public ResponseEntity<?> saveUserConfidenceCircle(
+      @RequestParam String email, @RequestAttribute("LoggedInUser") String loggedUserEmail) {
 
     Optional<UserEntity> optionalRequestUser = userService.findUserByEmail(email);
-    if(optionalRequestUser.isEmpty()) return ResponseEntity.notFound().build();
+    if (optionalRequestUser.isEmpty()) return ResponseEntity.notFound().build();
     UserEntity loggedUser = optionalRequestUser.get();
-    if(findUserRequest(loggedUser.getConfidenceRequest(), email)) return ResponseEntity.badRequest().build();
+    if (findUserRequest(loggedUser.getConfidenceRequest(), email))
+      return ResponseEntity.badRequest().build();
     Optional<UserEntity> loggedUserOptional = userService.findUserByEmail(loggedUserEmail);
 
     if (loggedUserOptional.isPresent()) {
@@ -36,7 +37,8 @@ public class ConfidenceCircleController {
       List<ConfidenceCircleUser> confidenceCircle = loggedUser.getConfidenceCircle();
       if (confidenceCircle.size() > 2) return ResponseEntity.badRequest().build();
 
-      ConfidenceCircleUser confidenceCircleUser = ConfidenceCircleUser.builder()
+      ConfidenceCircleUser confidenceCircleUser =
+          ConfidenceCircleUser.builder()
               .id(userToAdd.getId())
               .name(userToAdd.getName())
               .email(userToAdd.getEmail())
@@ -50,37 +52,35 @@ public class ConfidenceCircleController {
       return ResponseEntity.ok(loggedUser.getConfidenceCircle());
     }
     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-
   }
 
   @DeleteMapping("/delete")
-  public ResponseEntity<?> deleteUserConfidenceCircle(@RequestParam String email, @RequestAttribute("LoggedInUser") String loggedUserEmail) {
+  public ResponseEntity<?> deleteUserConfidenceCircle(
+      @RequestParam String email, @RequestAttribute("LoggedInUser") String loggedUserEmail) {
 
     Optional<UserEntity> loggedUserOptional = userService.findUserByEmail(loggedUserEmail);
 
     if (loggedUserOptional.isPresent()) {
       UserEntity loggedUser = loggedUserOptional.get();
 
-      List<ConfidenceCircleUser> confidenceCircleUserList = loggedUser.getConfidenceCircle()
-              .stream()
-              .filter(
-                      (confidenceCircleUser -> !confidenceCircleUser.getEmail().equals(email))
-              ).toList();
+      List<ConfidenceCircleUser> confidenceCircleUserList =
+          loggedUser.getConfidenceCircle().stream()
+              .filter((confidenceCircleUser -> !confidenceCircleUser.getEmail().equals(email)))
+              .toList();
       ArrayList<ConfidenceCircleUser> confidenceCircle = new ArrayList<>(confidenceCircleUserList);
       loggedUser.setConfidenceCircle(confidenceCircle);
       userService.saveUser(loggedUser);
       return ResponseEntity.ok(loggedUser.getConfidenceCircle());
-
     }
 
-    return EntityResponse.generateResponse(ResponseConstants.ISSUE_WHILE_DELETING_USER, HttpStatus.BAD_REQUEST, "Not found user");
-
+    return EntityResponse.generateResponse(
+        ResponseConstants.ISSUE_WHILE_DELETING_USER, HttpStatus.BAD_REQUEST, "Not found user");
   }
 
-  private boolean findUserRequest(List<ConfidenceCircleRequests> confidenceCircleRequests, String email) {
+  private boolean findUserRequest(
+      List<ConfidenceCircleRequests> confidenceCircleRequests, String email) {
 
-    return confidenceCircleRequests.stream().anyMatch( (requestUser -> requestUser.getEmail().equals(email) ));
-
+    return confidenceCircleRequests.stream()
+        .anyMatch((requestUser -> requestUser.getEmail().equals(email)));
   }
-
 }

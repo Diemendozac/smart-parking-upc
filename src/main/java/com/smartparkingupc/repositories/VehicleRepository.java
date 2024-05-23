@@ -12,9 +12,11 @@ import java.util.Optional;
 public interface VehicleRepository extends CrudRepository<Vehicle, Long> {
 
   List<Vehicle> findAllByOwnerId(Long ownerId);
+
   Optional<Vehicle> findByPlate(String plate);
+
   @Query("SELECT v FROM Vehicle v WHERE v.isParked = true")
   List<Vehicle> findAllParkedVehicles();
-  void deleteVehicleByPlate(String plate);
 
+  void deleteVehicleByPlate(String plate);
 }

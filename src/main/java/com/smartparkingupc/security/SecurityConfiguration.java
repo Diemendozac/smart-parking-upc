@@ -25,99 +25,125 @@ import java.util.Collections;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
-	@Autowired
-	private JWTRequestFilter jwtRequestFilter;
-	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return new CustomPasswordEncoder();
-	}
+  @Autowired private JWTRequestFilter jwtRequestFilter;
 
-	@Autowired
-	public UserDetailsService userDetailsService;
+  @Bean
+  public PasswordEncoder passwordEncoder() {
+    return new CustomPasswordEncoder();
+  }
 
-	@Bean
-	public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
-		return authConfig.getAuthenticationManager();
-	}
+  @Autowired public UserDetailsService userDetailsService;
 
-	private void sharedSecurityConfiguration(HttpSecurity httpSecurity) throws Exception {
-		httpSecurity.csrf(AbstractHttpConfigurer::disable).cors(AbstractHttpConfigurer::disable)
-				.sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-	}
+  @Bean
+  public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig)
+      throws Exception {
+    return authConfig.getAuthenticationManager();
+  }
 
-	@Bean
-	public SecurityFilterChain securityFilterChainGlobalAPI(HttpSecurity httpSecurity) throws Exception {
-		sharedSecurityConfiguration(httpSecurity);
-		httpSecurity.securityMatcher("user", "watchman","admin").authorizeHttpRequests(auth -> auth.anyRequest().authenticated()).addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+  private void sharedSecurityConfiguration(HttpSecurity httpSecurity) throws Exception {
+    httpSecurity
+        .csrf(AbstractHttpConfigurer::disable)
+        .cors(AbstractHttpConfigurer::disable)
+        .sessionManagement(
+            httpSecuritySessionManagementConfigurer ->
+                httpSecuritySessionManagementConfigurer.sessionCreationPolicy(
+                    SessionCreationPolicy.STATELESS));
+  }
 
-		return httpSecurity.build();
-	}
-	
-	@Bean
-	public SecurityFilterChain securityFilterChainGlobalAdminAPI(HttpSecurity httpSecurity) throws Exception {
-		sharedSecurityConfiguration(httpSecurity);
-		httpSecurity.securityMatcher("/watchman/**").authorizeHttpRequests(auth -> auth.anyRequest()
-		.hasRole("WATCHMAN")).addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+  @Bean
+  public SecurityFilterChain securityFilterChainGlobalAPI(HttpSecurity httpSecurity)
+      throws Exception {
+    sharedSecurityConfiguration(httpSecurity);
+    httpSecurity
+        .securityMatcher("user", "watchman", "admin")
+        .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
+        .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
-		return httpSecurity.build();
-	}
+    return httpSecurity.build();
+  }
 
-	@Bean
-	public SecurityFilterChain securityFilterChainGlobalUserProfileAPI(HttpSecurity httpSecurity) throws Exception {
-		sharedSecurityConfiguration(httpSecurity);
-		httpSecurity.securityMatcher("/user/authenticate").authorizeHttpRequests(auth -> auth.anyRequest()
-		.hasRole("USER")).addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+  @Bean
+  public SecurityFilterChain securityFilterChainGlobalAdminAPI(HttpSecurity httpSecurity)
+      throws Exception {
+    sharedSecurityConfiguration(httpSecurity);
+    httpSecurity
+        .securityMatcher("/watchman/**")
+        .authorizeHttpRequests(auth -> auth.anyRequest().hasRole("WATCHMAN"))
+        .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
-		return httpSecurity.build();
-	}
+    return httpSecurity.build();
+  }
 
-	@Bean
-	public SecurityFilterChain securityFilterChainConfidenceCircleAPI(HttpSecurity httpSecurity) throws Exception {
-		sharedSecurityConfiguration(httpSecurity);
-		httpSecurity.securityMatcher("/confidence-circle/**").authorizeHttpRequests(auth -> auth.anyRequest()
-						.hasRole("USER")).addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+  @Bean
+  public SecurityFilterChain securityFilterChainGlobalUserProfileAPI(HttpSecurity httpSecurity)
+      throws Exception {
+    sharedSecurityConfiguration(httpSecurity);
+    httpSecurity
+        .securityMatcher("/user/authenticate")
+        .authorizeHttpRequests(auth -> auth.anyRequest().hasRole("USER"))
+        .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
-		return httpSecurity.build();
-	}
+    return httpSecurity.build();
+  }
 
-	@Bean
-	public SecurityFilterChain securityFilterChainLoginAPI(HttpSecurity httpSecurity) throws Exception {
-		sharedSecurityConfiguration(httpSecurity);
-		httpSecurity.securityMatcher("/user/authenticate").authorizeHttpRequests(auth -> auth.anyRequest().permitAll()).addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+  @Bean
+  public SecurityFilterChain securityFilterChainConfidenceCircleAPI(HttpSecurity httpSecurity)
+      throws Exception {
+    sharedSecurityConfiguration(httpSecurity);
+    httpSecurity
+        .securityMatcher("/confidence-circle/**")
+        .authorizeHttpRequests(auth -> auth.anyRequest().hasRole("USER"))
+        .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
-		return httpSecurity.build();
-	}
+    return httpSecurity.build();
+  }
 
-	@Bean
-	public SecurityFilterChain securityFilterChainRegisterAPI(HttpSecurity httpSecurity) throws Exception {
-		sharedSecurityConfiguration(httpSecurity);
-		httpSecurity.securityMatcher("/user/register").authorizeHttpRequests(auth -> auth.anyRequest().permitAll()).addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+  @Bean
+  public SecurityFilterChain securityFilterChainLoginAPI(HttpSecurity httpSecurity)
+      throws Exception {
+    sharedSecurityConfiguration(httpSecurity);
+    httpSecurity
+        .securityMatcher("/user/authenticate")
+        .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+        .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
-		return httpSecurity.build();
-	}
+    return httpSecurity.build();
+  }
 
-	@Bean
-	public AuthenticationProvider authenticationProvider(){
-		DaoAuthenticationProvider authenticationProvider=new DaoAuthenticationProvider();
-		authenticationProvider.setUserDetailsService(userDetailsService);
-		authenticationProvider.setPasswordEncoder(passwordEncoder());
-		return authenticationProvider;
-	}
+  @Bean
+  public SecurityFilterChain securityFilterChainRegisterAPI(HttpSecurity httpSecurity)
+      throws Exception {
+    sharedSecurityConfiguration(httpSecurity);
+    httpSecurity
+        .securityMatcher("/user/register")
+        .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+        .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
-	@Bean
-	public CorsConfigurationSource corsConfigurationSource() {
-		final CorsConfiguration configuration = new CorsConfiguration();
+    return httpSecurity.build();
+  }
 
-		configuration.setAllowedOrigins(Collections.singletonList("*"));
-		configuration.setAllowedMethods(Collections.singletonList("*"));
-		configuration.setAllowedHeaders(Collections.singletonList("*"));
+  @Bean
+  public AuthenticationProvider authenticationProvider() {
+    DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+    authenticationProvider.setUserDetailsService(userDetailsService);
+    authenticationProvider.setPasswordEncoder(passwordEncoder());
+    return authenticationProvider;
+  }
 
-		configuration.addAllowedOrigin("*");
-		configuration.addAllowedHeader("*");
-		configuration.addAllowedMethod("*");
-		final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-		source.registerCorsConfiguration("/**", configuration);
+  @Bean
+  public CorsConfigurationSource corsConfigurationSource() {
+    final CorsConfiguration configuration = new CorsConfiguration();
 
-		return source;
-	}
+    configuration.setAllowedOrigins(Collections.singletonList("*"));
+    configuration.setAllowedMethods(Collections.singletonList("*"));
+    configuration.setAllowedHeaders(Collections.singletonList("*"));
+
+    configuration.addAllowedOrigin("*");
+    configuration.addAllowedHeader("*");
+    configuration.addAllowedMethod("*");
+    final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/**", configuration);
+
+    return source;
+  }
 }

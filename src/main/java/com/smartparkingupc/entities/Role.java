@@ -7,21 +7,18 @@ import lombok.Data;
 import java.io.Serial;
 import java.io.Serializable;
 
-
 @Entity
 @Table(name = "roles")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
-public class Role implements Serializable{
+public class Role implements Serializable {
 
-	@Serial
-	private static final long serialVersionUID = 5926468583005150707L;
-	
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+  @Serial private static final long serialVersionUID = 5926468583005150707L;
 
-	@Column(name = "name", nullable = false)
-	private String name;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
+  @Column(name = "name", nullable = false)
+  private String name;
 }

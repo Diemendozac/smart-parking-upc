@@ -11,18 +11,15 @@ import java.util.List;
 @Service
 public class TicketServiceImpl implements ITicketService {
 
-  @Autowired
-  private TicketRepository ticketRepository;
+  @Autowired private TicketRepository ticketRepository;
 
   @Override
   public List<Ticket> findUserRelatedTickets(String userOwnerEmail) {
-    return ticketRepository.findAllByUserOwnerEmail(userOwnerEmail) ;
+    return ticketRepository.findAllByUserOwnerEmail(userOwnerEmail);
   }
 
   @Override
   public void saveTicket(Ticket ticket) {
     ticketRepository.save(ticket);
   }
-
-
 }

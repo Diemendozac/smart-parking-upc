@@ -17,14 +17,10 @@ import java.util.*;
 @Service
 public class UserServiceImpl implements IUserService {
 
-  @Autowired
-  private UserRepository userRepository;
-  @Autowired
-  private RoleServiceImpl roleService;
+  @Autowired private UserRepository userRepository;
+  @Autowired private RoleServiceImpl roleService;
 
-  @Autowired
-  private IUserRoleRepository userRoleRepository;
-
+  @Autowired private IUserRoleRepository userRoleRepository;
 
   @Override
   public List<UserEntity> findAll() {
@@ -46,10 +42,11 @@ public class UserServiceImpl implements IUserService {
 
       Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
 
-      userRoles.forEach(userRole -> authorities.add(new SimpleGrantedAuthority(userRole.getRole().getName())));
+      userRoles.forEach(
+          userRole -> authorities.add(new SimpleGrantedAuthority(userRole.getRole().getName())));
 
-      return new org.springframework.security.core.userdetails.User(user.getEmail(),
-              user.getPassword(), authorities);
+      return new org.springframework.security.core.userdetails.User(
+          user.getEmail(), user.getPassword(), authorities);
     }
     return null;
   }
@@ -62,15 +59,13 @@ public class UserServiceImpl implements IUserService {
   @Override
   public void saveUser(UserEntity user) {
     UserEntity savedUser = userRepository.save(user);
-    UserRole userRole = UserRole.builder().user(savedUser)
-            .role(roleService.findDefaultRole()).build();
+    UserRole userRole =
+        UserRole.builder().user(savedUser).role(roleService.findDefaultRole()).build();
     userRoleRepository.save(userRole);
-
   }
 
   public Optional<UserEntity> findCurrentUser() {
     return userRepository.findById(SecurityPrincipal.getInstance().getLoggedInPrincipal().getId());
-
   }
 
   @Override
@@ -78,19 +73,26 @@ public class UserServiceImpl implements IUserService {
     Optional<UserEntity> optOwner = userRepository.findById(ownerId);
     if (optOwner.isEmpty()) return null;
     UserEntity owner = optOwner.get();
-    UserEntityByWatchmanResponse ownerByWatchmanResponse = UserEntityByWatchmanResponse.builder()
+    UserEntityByWatchmanResponse ownerByWatchmanResponse =
+        UserEntityByWatchmanResponse.builder()
             .name(owner.getName())
             .email(owner.getEmail())
             .phoneNumber(owner.getPhoneNumber())
-            .photoUrl(owner.getPhotoUrl()).build();
+            .photoUrl(owner.getPhotoUrl())
+            .build();
     List<UserEntityByWatchmanResponse> relatedUsers = new ArrayList<>();
     relatedUsers.add(ownerByWatchmanResponse);
-    owner.getConfidenceCircle().forEach(confidenceCircleUser -> relatedUsers.add(UserEntityByWatchmanResponse
-            .builder().name(confidenceCircleUser.getName())
-            .phoneNumber(confidenceCircleUser.getPhoneNumber())
-            .photoUrl(confidenceCircleUser.getPhotoUrl())
-            .email(confidenceCircleUser.getEmail()).build()));
+    owner
+        .getConfidenceCircle()
+        .forEach(
+            confidenceCircleUser ->
+                relatedUsers.add(
+                    UserEntityByWatchmanResponse.builder()
+                        .name(confidenceCircleUser.getName())
+                        .phoneNumber(confidenceCircleUser.getPhoneNumber())
+                        .photoUrl(confidenceCircleUser.getPhotoUrl())
+                        .email(confidenceCircleUser.getEmail())
+                        .build()));
     return relatedUsers;
   }
-
 }

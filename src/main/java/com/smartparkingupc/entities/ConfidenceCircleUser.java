@@ -1,6 +1,5 @@
 package com.smartparkingupc.entities;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -17,11 +16,9 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ConfidenceCircleUser {
 
-  @Id
-  private Long id;
+  @Id private Long id;
   private String email;
   private String name;
   private String phoneNumber;
   private String photoUrl;
-
 }

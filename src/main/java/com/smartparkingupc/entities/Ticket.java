@@ -8,14 +8,12 @@ import java.time.LocalDateTime;
 
 @Data
 @Builder
-@Document( collection = "tickets")
-public class Ticket{
+@Document(collection = "tickets")
+public class Ticket {
 
   private String userOwnerEmail;
   private String watchmanSelectedUser;
   private String vehiclePlate;
   private LocalDateTime createdAt;
   private Boolean isGettingIn;
-
 }
-

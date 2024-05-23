@@ -8,6 +8,4 @@ import java.util.List;
 public interface TicketRepository extends MongoRepository<Ticket, String> {
 
   List<Ticket> findAllByUserOwnerEmail(String userOwnerEmail);
-
-
 }
