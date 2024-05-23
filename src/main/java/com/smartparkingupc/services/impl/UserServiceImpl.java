@@ -7,6 +7,7 @@ import com.smartparkingupc.repositories.IUserRoleRepository;
 import com.smartparkingupc.repositories.UserRepository;
 import com.smartparkingupc.security.SecurityPrincipal;
 import com.smartparkingupc.services.IUserService;
+import jakarta.annotation.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,10 +23,6 @@ public class UserServiceImpl implements IUserService {
 
   @Autowired private IUserRoleRepository userRoleRepository;
 
-  @Override
-  public List<UserEntity> findAll() {
-    return null;
-  }
 
   @Override
   public Optional<UserEntity> findUserById(Long id) {
@@ -35,6 +32,11 @@ public class UserServiceImpl implements IUserService {
   @Override
   public UserDetails loadUserByEmail(String email) {
 
+    return getUserDetails(email, userRepository, userRoleRepository);
+  }
+
+  @Nullable
+  public static UserDetails getUserDetails(String email, UserRepository userRepository, IUserRoleRepository userRoleRepository) {
     Optional<UserEntity> optUser = userRepository.findByEmail(email);
     if (optUser.isPresent()) {
       UserEntity user = optUser.get();
