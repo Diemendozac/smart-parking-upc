@@ -3,23 +3,29 @@ INSERT INTO roles(name) values("ROLE_USER");
 INSERT INTO roles(name) values("ROLE_WATCHMAN");
 INSERT INTO roles(name) values("ROLE_ADMIN");
 
-INSERT INTO users (email, name, password, phone_number, photo_url) VALUES ('diegomedezdiaz@unicesar.edu.co', 'Diegomedez Díaz', 'asd1234', '3012345678', 'https://i.pravatar.com/150?img=1');
+INSERT INTO users (email, name, password, phone_number, photo_url) VALUES ('diegomedezdiaz@unicesar.edu.co', 'Diegomedez Díaz', 'testpassword', '3012345678', 'https://i.pravatar.com/150?img=1');
 
-INSERT INTO users (email, name, password, phone_number, photo_url) VALUES ('arianayrom@unicesar.edu.co', 'Ariana Romero', '4321dsa', '3019876543', 'https://i.pravatar.com/150?img=2');
+INSERT INTO users (email, name, password, phone_number, photo_url) VALUES ('arianayrom@unicesar.edu.co', 'Ariana Romero', 'testpassword', '3019876543', 'https://i.pravatar.com/150?img=2');
 
-INSERT INTO users (email, name, password, phone_number, photo_url) VALUES ('juanalbertomunozdavid@unicesar.edo.co', 'Juan Alberto Munoz', 'asd1234', '3011234567', 'https://i.pravatar.com/150?img=3');
+INSERT INTO users (email, name, password, phone_number, photo_url) VALUES ('juanalbertomunozdavid@unicesar.edo.co', 'Juan Alberto Munoz', 'testpassword', '3011234567', 'https://i.pravatar.com/150?img=3');
 
-INSERT INTO users (email, name, password, phone_number, photo_url) VALUES ('manuelamartinezgarcia@unicesar.edu.co', 'Manuela Martinez', '4321dsa', '3019876543', 'https://i.pravatar.com/150?img=2');
+INSERT INTO users (email, name, password, phone_number, photo_url) VALUES ('manuelamartinezgarcia@unicesar.edu.co', 'Manuela Martinez', 'testpassword', '3019876543', 'https://i.pravatar.com/150?img=2');
 
-INSERT INTO users (email, name, password, phone_number, photo_url) VALUES ('andresriveraperez@unicesar.edu.co', 'Andres Rivera', 'asd1234', '3017654321', 'https://i.pravatar.com/150?img=1');
+INSERT INTO users (email, name, password, phone_number, photo_url) VALUES ('andresriveraperez@unicesar.edu.co', 'Andres Rivera', 'testpassword', '3017654321', 'https://i.pravatar.com/150?img=1');
 
-INSERT INTO users (email, name, password, phone_number, photo_url) VALUES ('luisafernandalopezramirez@unicesar.edu.co', 'Luisa Fernanda Lopez', '4321dsa', '3015432167', 'https://i.pravatar.com/150?img=4');
+INSERT INTO users (email, name, password, phone_number, photo_url) VALUES ('luisafernandalopezramirez@unicesar.edu.co', 'Luisa Fernanda Lopez', 'testpassword', '3015432167', 'https://i.pravatar.com/150?img=4');
 
-INSERT INTO users (email, name, password, phone_number, photo_url) VALUES ('carolinamartinezrodriguez@unicesar.edu.co', 'Carolina Martinez', 'asd1234', '3016543217', 'https://i.pravatar.com/3');
+INSERT INTO users (email, name, password, phone_number, photo_url) VALUES ('carolinamartinezrodriguez@unicesar.edu.co', 'Carolina Martinez', 'testpassword', '3016543217', 'https://i.pravatar.com/3');
 
-INSERT INTO users (email, name, password, phone_number, photo_url) VALUES ('juancamilomendezsanchez@unicesar.edu.co', 'Juan Camilo Mendez', '4321dsa', '3015432168', 'https://i.pravatar.com/4');
+INSERT INTO users (email, name, password, phone_number, photo_url) VALUES ('juancamilomendezsanchez@unicesar.edu.co', 'Juan Camilo Mendez', 'testpassword', '3015432168', 'https://i.pravatar.com/4');
 
-INSERT INTO users (email, name, password, phone_number, photo_url) VALUES ('jramireza@unicesar.edu.co', 'Juliana Ramirez', 'asd1234', '3014321679', 'https://i.pravatar.com/5');
+INSERT INTO users (email, name, password, phone_number, photo_url) VALUES ('jramireza@unicesar.edu.co', 'Juliana Ramirez', 'testpassword', '3015432161', 'https://i.pravatar.com/5');
+
+INSERT INTO users (email, name, password, phone_number, photo_url) VALUES ('testuser1@unicesar.edu.co', 'Juliana Ramirez', 'testpassword', '3015432160', 'https://i.pravatar.com/5');
+INSERT INTO users (email, name, password, phone_number, photo_url) VALUES ('testuser2@unicesar.edu.co', 'Pepe Perez', 'testpassword', '3015432114', 'https://i.pravatar.com/5');
+INSERT INTO users (email, name, password, phone_number, photo_url) VALUES ('testuser3@unicesar.edu.co', 'Marco Alonso', 'testpassword', '3015432120', 'https://i.pravatar.com/5');
+INSERT INTO users (email, name, password, phone_number, photo_url) VALUES ('testuser4@unicesar.edu.co', 'Joao Gilberto', 'testpassword', '3015432110', 'https://i.pravatar.com/5');
+INSERT INTO users (email, name, password, phone_number, photo_url) VALUES ('testuser5@unicesar.edu.co', 'Charlie Parker', 'testpassword', '3015432110', 'https://i.pravatar.com/5');
 
 INSERT INTO user_role (id, role_id, user_id) VALUES (1, 1, 1);
 INSERT INTO user_role (id, role_id, user_id) VALUES (2, 1, 2);
@@ -29,7 +35,13 @@ INSERT INTO user_role (id, role_id, user_id) VALUES (5, 1, 5);
 INSERT INTO user_role (id, role_id, user_id) VALUES (6, 1, 6);
 INSERT INTO user_role (id, role_id, user_id) VALUES (7, 1, 7);
 INSERT INTO user_role (id, role_id, user_id) VALUES (8, 2, 8);
+INSERT INTO user_role (id, role_id, user_id) VALUES (8, 1, 8);
 INSERT INTO user_role (id, role_id, user_id) VALUES (9, 3, 9);
+INSERT INTO user_role (id, role_id, user_id) VALUES (10, 1, 10);
+INSERT INTO user_role (id, role_id, user_id) VALUES (11, 1, 11);
+INSERT INTO user_role (id, role_id, user_id) VALUES (12, 1, 12);
+INSERT INTO user_role (id, role_id, user_id) VALUES (13, 1, 13);
+INSERT INTO user_role (id, role_id, user_id) VALUES (14, 1, 14);
 
 INSERT INTO vehicle (model, owner_id, brand, line, plate,is_parked) VALUES (2015, 1, 'YAMAHA', 'MX 125', 'DSA123', true);
 INSERT INTO vehicle (model, owner_id, brand, line, plate,is_parked) VALUES (2018, 1, 'BAJAJ', 'BOXER', 'ROB121', true);

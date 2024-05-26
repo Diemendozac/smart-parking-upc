@@ -56,7 +56,7 @@ public class WatchmanController {
                 confidenceCircleUser ->
                     Objects.equals(confidenceCircleUser.getEmail(), watchmanSelectedUser));
 
-    if (!isWatchmanSelectedUserPresentInConfidenceCircle) return ResponseEntity.notFound().build();
+    if (!isWatchmanSelectedUserPresentInConfidenceCircle && !Objects.equals(watchmanSelectedUser, user.getEmail())) return ResponseEntity.notFound().build();
 
     boolean setParkedStatus = !vehicle.isParked();
 

@@ -48,14 +48,14 @@ public class UserEntity implements UserDetails {
       name = "confidence_requests",
       joinColumns = @JoinColumn(name = "user_id"),
       inverseJoinColumns = @JoinColumn(name = "confidence_requests_id"))
-  private List<ConfidenceCircleRequests> confidenceRequest;
+  private List<ConfidenceCircleRequest> confidenceRequest;
 
   @ManyToMany
   @JoinTable(
       name = "confidence_requests",
       joinColumns = @JoinColumn(name = "confidence_requests_id"),
       inverseJoinColumns = @JoinColumn(name = "user_id"))
-  private List<ConfidenceCircleRequests> confidenceRequestOf;
+  private List<ConfidenceCircleRequest> confidenceRequestOf;
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {

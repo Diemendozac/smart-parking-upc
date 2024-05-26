@@ -3,7 +3,7 @@ package com.smartparkingupc.controllers;
 import com.smartparkingupc.controllers.dto.ConfidenceCircleDTO;
 import com.smartparkingupc.controllers.dto.UserDTO;
 import com.smartparkingupc.controllers.dto.VehicleDTO;
-import com.smartparkingupc.entities.ConfidenceCircleRequests;
+import com.smartparkingupc.entities.ConfidenceCircleRequest;
 import com.smartparkingupc.entities.UserEntity;
 import com.smartparkingupc.services.IUserService;
 import com.smartparkingupc.http.response.EntityResponse;
@@ -62,11 +62,6 @@ public class UserController {
                     "Error while finding"));
   }
 
-  @GetMapping("/profile")
-  public ResponseEntity<Object> retrieveUserProfile() {
-    return EntityResponse.generateResponse(
-        "User Profile", HttpStatus.OK, userService.findCurrentUser().get());
-  }
 
   @GetMapping("/login")
   public ResponseEntity<?> findUserByEmail(@RequestAttribute("LoggedInUser") String email) {
@@ -87,11 +82,11 @@ public class UserController {
                           .build())
               .toList();
 
-      List<ConfidenceCircleRequests> confidenceRequestDTOS =
+      List<ConfidenceCircleRequest> confidenceRequestDTOS =
           user.getConfidenceRequest().stream()
               .map(
                   confidenceCircleUser ->
-                      ConfidenceCircleRequests.builder()
+                      ConfidenceCircleRequest.builder()
                           .email(confidenceCircleUser.getEmail())
                           .name(confidenceCircleUser.getName())
                           .build())

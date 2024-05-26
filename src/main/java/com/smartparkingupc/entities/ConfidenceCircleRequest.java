@@ -14,9 +14,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 @Builder
-public class ConfidenceCircleRequests {
+public class ConfidenceCircleRequest {
 
   @Id private Long id;
   private String email;
   private String name;
+
 }
