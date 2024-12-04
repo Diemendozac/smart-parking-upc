@@ -20,7 +20,9 @@ public interface IVehicleService {
 
   Long findOwnerRequestIdByUserEmail(String email);
 
-  List<VehicleDTO> findAllParkedVehicles();
+  List<VehicleDTO> findAllParkedVehicleDTOs();
+  List<Vehicle> findAllParkedVehicles();
 
   List<VehicleDTO> findAssociatedVehicles(Long requestId);
+  boolean kickOffVehicle(String plate);
 }

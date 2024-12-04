@@ -126,7 +126,7 @@ public class VehicleServiceImplTest {
 	void testFindAllParkedVehicles() {
 		when(vehicleRepository.findAllParkedVehicles()).thenReturn(Collections.singletonList(vehicle));
 
-		List<VehicleDTO> result = vehicleService.findAllParkedVehicles();
+		List<VehicleDTO> result = vehicleService.findAllParkedVehicleDTOs();
 
 		assertEquals(1, result.size());
 		assertEquals("ZXC516", result.get(0).getPlate());

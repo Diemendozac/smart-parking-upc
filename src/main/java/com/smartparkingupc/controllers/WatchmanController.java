@@ -37,7 +37,7 @@ public class WatchmanController {
 
   @GetMapping("/parked-vehicles")
   public ResponseEntity<?> findAllParkedVehicles() {
-    return ResponseEntity.ok(vehicleService.findAllParkedVehicles());
+    return ResponseEntity.ok(vehicleService.findAllParkedVehicleDTOs());
   }
 
   @PatchMapping("/switch-state")
@@ -56,7 +56,9 @@ public class WatchmanController {
                 confidenceCircleUser ->
                     Objects.equals(confidenceCircleUser.getEmail(), watchmanSelectedUser));
 
-    if (!isWatchmanSelectedUserPresentInConfidenceCircle && !Objects.equals(watchmanSelectedUser, user.getEmail())) return ResponseEntity.notFound().build();
+    if (!isWatchmanSelectedUserPresentInConfidenceCircle
+        && !Objects.equals(watchmanSelectedUser, user.getEmail()))
+      return ResponseEntity.notFound().build();
 
     boolean setParkedStatus = !vehicle.isParked();
 
@@ -76,22 +78,19 @@ public class WatchmanController {
 
   @GetMapping("/kick")
   public ResponseEntity<?> kickParkedVehicle(@RequestParam String plate) {
-    Optional<Vehicle> optVehicle = vehicleService.findVehicleByPlate(plate);
-    if (optVehicle.isEmpty()) return ResponseEntity.notFound().build();
-    Vehicle vehicle = optVehicle.get();
-    vehicle.setParked(false);
-    return ResponseEntity.ok(vehicleService.findAllParkedVehicles());
+    return vehicleService.kickOffVehicle(plate) ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
   }
 
   @GetMapping("/kick-all")
   public ResponseEntity<?> kickAllParkedVehicle() {
-    List<Vehicle> allVehicles = vehicleService.findAll();
-    List<Vehicle> vehiclesToKick =
-        allVehicles.stream()
-            .filter(Vehicle::isParked)
-            .peek(vehicle -> vehicle.setParked(false))
-            .toList();
-    vehiclesToKick.forEach(vehicle -> vehicleService.save(vehicle, vehicle.getOwnerId()));
-    return ResponseEntity.ok(vehicleService.findAll());
+    List<Vehicle> vehiclesToKick = vehicleService.findAllParkedVehicles();
+    vehiclesToKick.forEach(
+        vehicle -> {
+          vehicle.setParked(false);
+          vehicleService.save(vehicle, vehicle.getOwnerId());
+        });
+    return ResponseEntity.ok(vehicleService.findAllParkedVehicleDTOs());
   }
+
+
 }

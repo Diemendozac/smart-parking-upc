@@ -30,7 +30,6 @@ public class VehicleServiceImpl implements IVehicleService {
 
   @Override
   public void save(Vehicle vehicle, Long ownerId) {
-
     if (vehicleRepository.findAllByOwnerId(ownerId).size() > 2) return;
     vehicleRepository.save(vehicle);
   }
@@ -54,7 +53,7 @@ public class VehicleServiceImpl implements IVehicleService {
   }
 
   @Override
-  public List<VehicleDTO> findAllParkedVehicles() {
+  public List<VehicleDTO> findAllParkedVehicleDTOs() {
     return vehicleRepository.findAllParkedVehicles().stream()
         .map(
             vehicle ->
@@ -65,6 +64,11 @@ public class VehicleServiceImpl implements IVehicleService {
                     .line(vehicle.getLine())
                     .build())
         .toList();
+  }
+
+  @Override
+  public List<Vehicle> findAllParkedVehicles() {
+    return vehicleRepository.findAllParkedVehicles();
   }
 
   @Override
@@ -95,5 +99,15 @@ public class VehicleServiceImpl implements IVehicleService {
                     .isOwner(Objects.equals(vehicle.getOwnerId(), associatedIds.get(0)))
                     .build()))
         .toList();
+  }
+
+  @Override
+  public boolean kickOffVehicle(String plate) {
+    Optional<Vehicle> optVehicle = vehicleRepository.findByPlate(plate);
+    if (optVehicle.isEmpty()) return false;
+    Vehicle vehicle = optVehicle.get();
+    vehicle.setParked(false);
+    vehicleRepository.save(vehicle);
+    return true;
   }
 }
