@@ -25,4 +25,5 @@ public interface IVehicleService {
 
   List<VehicleDTO> findAssociatedVehicles(Long requestId);
   boolean kickOffVehicle(String plate);
+  void kickAllVehicles();
 }

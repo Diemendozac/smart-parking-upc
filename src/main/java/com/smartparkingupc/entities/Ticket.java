@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Data
 @Builder
-@Document(collection = "tickets")
+@Document(collection = "ticket")
 public class Ticket {
 
   private String userOwnerEmail;

@@ -110,4 +110,9 @@ public class VehicleServiceImpl implements IVehicleService {
     vehicleRepository.save(vehicle);
     return true;
   }
+
+  @Override
+  public void kickAllVehicles() {
+    vehicleRepository.setAllVehiclesUnparked();
+  }
 }

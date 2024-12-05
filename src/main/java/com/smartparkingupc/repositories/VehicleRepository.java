@@ -2,6 +2,7 @@ package com.smartparkingupc.repositories;
 
 import com.smartparkingupc.entities.Vehicle;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -17,6 +18,11 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Long> {
 
   @Query(value = "SELECT * FROM vehicle WHERE is_parked = true", nativeQuery = true)
   List<Vehicle> findAllParkedVehicles();
+
+  @Modifying
+  @Query("UPDATE Vehicle v SET v.isParked = false")
+  int setAllVehiclesUnparked();
+
 
   void deleteVehicleByPlate(String plate);
 }
