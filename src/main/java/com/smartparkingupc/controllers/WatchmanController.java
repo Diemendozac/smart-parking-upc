@@ -3,6 +3,8 @@ package com.smartparkingupc.controllers;
 import com.smartparkingupc.entities.Ticket;
 import com.smartparkingupc.entities.UserEntity;
 import com.smartparkingupc.entities.Vehicle;
+import com.smartparkingupc.http.request.TicketCreationRequest;
+import com.smartparkingupc.http.response.RelatedUsersResponse;
 import com.smartparkingupc.http.response.UserEntityByWatchmanResponse;
 import com.smartparkingupc.services.ITicketService;
 import com.smartparkingupc.services.IUserService;
@@ -29,10 +31,15 @@ public class WatchmanController {
 
     Optional<Vehicle> optVehicle = vehicleService.findVehicleByPlate(plate);
     if (optVehicle.isEmpty()) return ResponseEntity.noContent().build();
-    Long ownerId = optVehicle.get().getOwnerId();
+    Vehicle vehicle = optVehicle.get();
+    Long ownerId = vehicle.getOwnerId();
     List<UserEntityByWatchmanResponse> vehicleRelatedUsers =
         userService.getVehicleRelatedUsers(ownerId);
-    return ResponseEntity.ok(vehicleRelatedUsers);
+    RelatedUsersResponse response = RelatedUsersResponse.builder()
+            .users(vehicleRelatedUsers)
+            .isParked(vehicle.isParked())
+            .build();
+    return ResponseEntity.ok(response);
   }
 
   @GetMapping("/parked-vehicles")
@@ -42,8 +49,8 @@ public class WatchmanController {
 
   @PatchMapping("/switch-state")
   public ResponseEntity<?> switchParkingStateByPlate(
-      @RequestParam String plate, @RequestParam String watchmanSelectedUser) {
-    Optional<Vehicle> optVehicle = vehicleService.findVehicleByPlate(plate);
+          @RequestBody TicketCreationRequest request) {
+    Optional<Vehicle> optVehicle = vehicleService.findVehicleByPlate(request.getPlate());
     if (optVehicle.isEmpty()) return ResponseEntity.notFound().build();
     Vehicle vehicle = optVehicle.get();
     Optional<UserEntity> optionalUser = userService.findUserById(vehicle.getOwnerId());
@@ -54,10 +61,10 @@ public class WatchmanController {
         user.getConfidenceCircle().stream()
             .anyMatch(
                 confidenceCircleUser ->
-                    Objects.equals(confidenceCircleUser.getEmail(), watchmanSelectedUser));
+                    Objects.equals(confidenceCircleUser.getEmail(), request.getWatchmanSelectedUser()));
 
     if (!isWatchmanSelectedUserPresentInConfidenceCircle
-        && !Objects.equals(watchmanSelectedUser, user.getEmail()))
+        && !Objects.equals(request.getWatchmanSelectedUser(), user.getEmail()))
       return ResponseEntity.notFound().build();
 
     boolean setParkedStatus = !vehicle.isParked();
@@ -65,7 +72,7 @@ public class WatchmanController {
     Ticket ticket =
         Ticket.builder()
             .vehiclePlate(vehicle.getPlate())
-            .watchmanSelectedUser(watchmanSelectedUser)
+            .watchmanSelectedUser(request.getWatchmanSelectedUser())
             .userOwnerEmail(user.getEmail())
             .createdAt(LocalDateTime.now())
             .isGettingIn(setParkedStatus)
