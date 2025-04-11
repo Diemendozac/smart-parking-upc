@@ -35,6 +35,11 @@ public class VehicleServiceImpl implements IVehicleService {
   }
 
   @Override
+  public void switchState(Vehicle vehicle) {
+    vehicleRepository.save(vehicle);
+  }
+
+  @Override
   public void updateVehicle(Vehicle vehicle) {
     vehicleRepository.save(vehicle);
   }

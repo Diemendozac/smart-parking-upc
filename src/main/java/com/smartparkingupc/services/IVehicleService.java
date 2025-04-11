@@ -13,6 +13,7 @@ public interface IVehicleService {
   Optional<Vehicle> findVehicleByPlate(String plate);
 
   void save(Vehicle vehicle, Long ownerId);
+  void switchState(Vehicle vehicle);
 
   void updateVehicle(Vehicle vehicle);
 
